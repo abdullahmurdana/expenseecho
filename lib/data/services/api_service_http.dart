@@ -37,9 +37,30 @@ class ApiServiceHttp {
     }
   }
 
-  static sendResetEmail(String value) {}
+  // Method to request a password reset email
+  static Future<void> sendResetEmail(String email) async {
+    final response = await http.post(
+      Uri.parse('$url/api/password_resets'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({"email": email}),
+    );
 
-  static resetPassword(String value, String value2) {}
+    if (response.statusCode != 200) {
+      throw Exception('Failed to send reset email');
+    }
+  }
+
+  static Future<void> resetPassword(String token, String newPassword) async {
+    final response = await http.patch(
+      Uri.parse('$url/api/password_resets/$token'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({"password": newPassword}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to reset password');
+    }
+  }
 
   // Getting all accounts and then filter according to user.
   static Future<List<AccountsModel>> fetchAccounts() async {
@@ -102,21 +123,6 @@ class ApiServiceHttp {
   }
 
   Future<List<ExpenseModel>> fetchExpenses() async {
-    // String? token = await AuthTokenManager.getAuthToken();
-    // print("---> Token :: $token");
-    // var headers = {
-    //   "Authorization": "",
-    //   "Content-Type": "application/json",
-    // };
-
-    // if (token != null) {
-    //   // Use the token in your API request headers
-    //   headers['Authorization'] = token;
-    // } else {
-    //   print("---> No token found for API");
-    //   // Handle the case where the token is not found
-    // }
-
     final response = await http.get(
       Uri.parse(
         '$url/api/collections/expenses/records',
@@ -137,20 +143,6 @@ class ApiServiceHttp {
   }
 
   Future<List<IncomeModel>> fetchIncomeList() async {
-    // String? token = await AuthTokenManager.getAuthToken();
-    // var headers = {
-    //   "Authorization": "",
-    //   "Content-Type": "application/json",
-    // };
-
-    // if (token != null) {
-    //   // Use the token in your API request headers
-    //   headers['Authorization'] = 'Bearer $token';
-    // } else {
-    //   print("---> No token found for API");
-    //   // Handle the case where the token is not found
-    // }
-
     final response = await http.get(
       Uri.parse('$url/api/collections/income/records'),
       // headers: headers,
@@ -165,6 +157,85 @@ class ApiServiceHttp {
       return items.map((item) => IncomeModel.fromJson(item)).toList();
     } else {
       throw Exception('---> Failed to load income list');
+    }
+  }
+
+  // Method to create a transfer
+  static Future<bool> createTransfer({
+    required String userId,
+    required String fromAccountId,
+    required String toAccountId,
+    required String description,
+    required double amount,
+  }) async {
+    final Map<String, dynamic> body = {
+      'user_id': userId,
+      'from_account_id': fromAccountId,
+      'to_account_id': toAccountId,
+      'description': description,
+      'amount': amount,
+    };
+
+    final response = await http.post(
+      Uri.parse('$url/api/collections/transfers/records'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(body),
+    );
+
+    print("---> JSON Status code :: Create Transfer :: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      print("---> Transfer created successfully");
+      return true;
+    } else {
+      print("---> Failed to create transfer: ${response.body}");
+      throw Exception('---> Failed to create transfer');
+    }
+  }
+
+  static Future<void> updateAccountBalance(
+      {required String accountId, required double newBalance}) async {
+    final String uri = '$url/api/collections/accounts/records/$accountId';
+
+    final Map<String, dynamic> body = {
+      'balance': newBalance,
+    };
+
+    final response = await http.patch(
+      Uri.parse(uri),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(body),
+    );
+
+    if (response.statusCode == 200) {
+      print('Account balance updated successfully.');
+    } else {
+      print(
+          'Failed to update account balance. Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to update account balance');
+    }
+  }
+
+  Future<bool> addExpense(ExpenseModel expense) async {
+    final uri = Uri.parse('$url/api/collections/expenses/records');
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: expense.toJson(),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      print('Failed to add expense: ${response.statusCode}');
+      return false;
     }
   }
 }

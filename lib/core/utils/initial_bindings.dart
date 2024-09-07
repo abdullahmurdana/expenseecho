@@ -1,4 +1,5 @@
 import 'package:expenseecho/core/app_exports.dart';
+import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new_controller.dart';
 import 'package:expenseecho/presentation/home/home_screen/home_screen_controller.dart';
 import 'package:expenseecho/presentation/home/main_screen/main_screen_controller.dart';
 import 'package:expenseecho/presentation/onboarding/add_new_account/add_new_account_controller.dart';
@@ -22,6 +23,7 @@ import 'package:expenseecho/presentation/profile/settings/settings_notifications
 import 'package:expenseecho/presentation/profile/settings/settings_screen/settings_screen_controller.dart';
 import 'package:expenseecho/presentation/profile/settings/settings_security_screen/settings_security_screen_controller.dart';
 import 'package:expenseecho/presentation/profile/settings/settings_theme_screen/settings_theme_screen_controller.dart';
+import 'package:expenseecho/presentation/transfers/transfer_add_new/transfer_add_new_controller.dart';
 
 class InitialBindings extends Bindings {
   @override
@@ -50,5 +52,7 @@ class InitialBindings extends Bindings {
     Get.lazyPut(() => ExportDataSuccessController(), fenix: true);
     Get.lazyPut(() => HomeScreenController(), fenix: true);
     Get.lazyPut(() => MainScreenController(), fenix: true);
+    Get.lazyPut(() => TransferAddNewController(), fenix: true);
+    Get.lazyPut(() => ExpenseAddNewController(), fenix: true);
   }
 }

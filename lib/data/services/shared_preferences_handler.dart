@@ -1,3 +1,4 @@
+import 'package:expenseecho/data/models/category_model.dart';
 import 'package:expenseecho/data/models/currency/currency_model.dart';
 import 'package:expenseecho/data/models/language/language_model.dart';
 import 'package:expenseecho/data/models/user_model/user_model.dart';
@@ -249,5 +250,72 @@ class SharedPreferencesHandler {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(_languagesListKey);
     print("---> removed languages list");
+  }
+
+  // Save income categories to shared preferences
+  static Future<void> saveIncomeCategories(
+      List<CategoryModel> categories) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> categoriesJson =
+        categories.map((category) => json.encode(category.toMap())).toList();
+    await prefs.setStringList(_incomeCategoriesKey, categoriesJson);
+    print("---> Saved income categories...");
+  }
+
+// Load income categories from shared preferences
+  static Future<List<CategoryModel>> loadIncomeCategories() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? categoriesJson = prefs.getStringList(_incomeCategoriesKey);
+    if (categoriesJson == null) {
+      return [];
+    }
+    return categoriesJson
+        .map((categoryJson) => CategoryModel.fromMap(json.decode(categoryJson)))
+        .toList();
+  }
+
+// Save a single income category to shared preferences
+  static Future<void> saveIncomeCategory(CategoryModel category) async {
+    List<CategoryModel> categories = await loadIncomeCategories();
+    categories.add(category);
+    await saveIncomeCategories(categories);
+  }
+
+// Save expense categories to shared preferences
+  static Future<void> saveExpenseCategories(
+      List<CategoryModel> categories) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> categoriesJson =
+        categories.map((category) => json.encode(category.toMap())).toList();
+    await prefs.setStringList(_expenseCategoriesKey, categoriesJson);
+    print("---> Saved expense categories...");
+  }
+
+  // Remove the List from shared preferences
+  static Future<void> removeCategories() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_expenseCategoriesKey);
+    print("---> removed expense Categories list");
+    await prefs.remove(_incomeCategoriesKey);
+    print("---> removed income Categories list");
+  }
+
+// Load expense categories from shared preferences
+  static Future<List<CategoryModel>> loadExpenseCategories() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? categoriesJson = prefs.getStringList(_expenseCategoriesKey);
+    if (categoriesJson == null) {
+      return [];
+    }
+    return categoriesJson
+        .map((categoryJson) => CategoryModel.fromMap(json.decode(categoryJson)))
+        .toList();
+  }
+
+// Save a single expense category to shared preferences
+  static Future<void> saveExpenseCategory(CategoryModel category) async {
+    List<CategoryModel> categories = await loadExpenseCategories();
+    categories.add(category);
+    await saveExpenseCategories(categories);
   }
 }

@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
+import 'package:expenseecho/data/services/attachment_helper.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:image_picker/image_picker.dart';
 
 Widget buildSeperator(BuildContext context, int index) => const Divider(
       endIndent: 20,
@@ -142,5 +148,92 @@ Widget _buildButton({
         ],
       ),
     ),
+  );
+}
+
+void showAttachmentBottomSheet(BuildContext context,
+    {required AppLocalizations localization,
+    required Size size,
+    required AttachmentController controller}) {
+  final screenWidth = size.width;
+  const double horizontalPadding = 16.0;
+  const double gap = 16.0;
+  final double availableWidthWithoutGap =
+      screenWidth - (2 * horizontalPadding) - (gap * 2);
+  final double availableWidth = screenWidth - (2 * horizontalPadding);
+
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (BuildContext context) {
+      return SizedBox(
+        height: 220,
+        child: Column(
+          children: [
+            10.h,
+            Center(
+              child: Container(
+                height: 5,
+                width: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: violetColor[20],
+                ),
+              ),
+            ),
+            60.h,
+            SizedBox(
+              width: availableWidth,
+              height: 95,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildButton(
+                    width: availableWidthWithoutGap / 3,
+                    iconPath: "assets/icons/camera_icon.png",
+                    label: localization.lbl_camera,
+                    onPressed: () async {
+                      final picker = ImagePicker();
+                      final pickedFile =
+                          await picker.pickImage(source: ImageSource.camera);
+                      if (pickedFile != null) {
+                        controller.setAttachment(File(pickedFile.path));
+                      }
+                    },
+                  ),
+                  _buildButton(
+                    width: availableWidthWithoutGap / 3,
+                    iconPath: "assets/icons/gallery_icon.png",
+                    label: localization.lbl_image,
+                    onPressed: () async {
+                      final picker = ImagePicker();
+                      final pickedFile =
+                          await picker.pickImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        controller.setAttachment(File(pickedFile.path));
+                      }
+                    },
+                  ),
+                  _buildButton(
+                    width: availableWidthWithoutGap / 3,
+                    iconPath: "assets/icons/file_icon.png",
+                    label: localization.lbl_document,
+                    onPressed: () async {
+                      final result = await FilePicker.platform.pickFiles();
+                      if (result != null) {
+                        final file = File(result.files.single.path!);
+                        controller.setAttachment(file);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    },
   );
 }

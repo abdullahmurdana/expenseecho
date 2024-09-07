@@ -1,3 +1,4 @@
+import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new.dart';
 import 'package:expenseecho/presentation/home/home_screen/home_screen.dart';
 import 'package:expenseecho/presentation/home/main_screen/main_screen.dart';
 import 'package:expenseecho/presentation/onboarding/add_new_account/add_new_account_screen.dart';
@@ -21,6 +22,7 @@ import 'package:expenseecho/presentation/profile/settings/settings_notifications
 import 'package:expenseecho/presentation/profile/settings/settings_screen/settings_screen.dart';
 import 'package:expenseecho/presentation/profile/settings/settings_security_screen/settings_security_screen.dart';
 import 'package:expenseecho/presentation/profile/settings/settings_theme_screen/settings_theme_screen.dart';
+import 'package:expenseecho/presentation/transfers/transfer_add_new/transfer_add_new_screen.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -47,9 +49,10 @@ class AppRoutes {
   static const String exportDataSuccessScreen = '/export_data_success_screen';
   static const String settingsNotificationsScreen =
       '/settings_notification_screen';
-
   static const String homeScreen = '/home_screen';
   static const String mainScreen = '/main_screen';
+  static const String transferAddNewScreen = '/transfer_add_new_screen';
+  static const String expenseAddNewScreen = '/expense_add_new_screen';
 
   static List<GetPage> getPages = [
     GetPage(
@@ -150,6 +153,15 @@ class AppRoutes {
     GetPage(
       name: exportDataSuccessScreen,
       page: () => const ExportDataSuccessScreen(),
+    ),
+
+    GetPage(
+      name: transferAddNewScreen,
+      page: () => const TransferAddnewScreen(),
+    ),
+    GetPage(
+      name: expenseAddNewScreen,
+      page: () => const ExpenseAddNewScreen(),
     ),
   ];
 }
