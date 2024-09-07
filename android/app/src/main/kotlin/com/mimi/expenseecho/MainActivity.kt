@@ -1,4 +1,4 @@
-package com.example.expenseecho
+package com.mimi.expenseecho
 
 import io.flutter.embedding.android.FlutterActivity
 
