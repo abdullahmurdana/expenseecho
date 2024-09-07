@@ -62,7 +62,7 @@ class _PasswordFieldState extends State<PasswordField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
+        SizedBox(
           height: widget.height ?? 56,
           width: widget.width ?? double.maxFinite,
           child: TextFormField(

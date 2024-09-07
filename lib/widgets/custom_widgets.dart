@@ -129,7 +129,7 @@ Widget _buildButton({
             width: 32,
             height: 32,
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Text(
             label,
             style: AppStyle.gfPoppinsCustom(

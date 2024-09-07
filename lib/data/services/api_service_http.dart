@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:expenseecho/data/models/accounts/accounts_model.dart';
+import 'package:expenseecho/data/models/expense/expense_model.dart';
+import 'package:expenseecho/data/models/income/income_model.dart';
 import 'package:expenseecho/data/models/user_model/user_model.dart';
 import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 import 'package:http/http.dart' as http;
@@ -96,6 +98,73 @@ class ApiServiceHttp {
       }).toList();
     } else {
       throw Exception('---> Failed to load accounts list');
+    }
+  }
+
+  Future<List<ExpenseModel>> fetchExpenses() async {
+    // String? token = await AuthTokenManager.getAuthToken();
+    // print("---> Token :: $token");
+    // var headers = {
+    //   "Authorization": "",
+    //   "Content-Type": "application/json",
+    // };
+
+    // if (token != null) {
+    //   // Use the token in your API request headers
+    //   headers['Authorization'] = token;
+    // } else {
+    //   print("---> No token found for API");
+    //   // Handle the case where the token is not found
+    // }
+
+    final response = await http.get(
+      Uri.parse(
+        '$url/api/collections/expenses/records',
+      ),
+      // headers: headers,
+    );
+
+    print("---> JSON Status code :: Get Expense List ::${response.headers}");
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> items = data['items'];
+
+      return items.map((item) => ExpenseModel.fromJson(item)).toList();
+    } else {
+      throw Exception('---> Failed to load expenses');
+    }
+  }
+
+  Future<List<IncomeModel>> fetchIncomeList() async {
+    // String? token = await AuthTokenManager.getAuthToken();
+    // var headers = {
+    //   "Authorization": "",
+    //   "Content-Type": "application/json",
+    // };
+
+    // if (token != null) {
+    //   // Use the token in your API request headers
+    //   headers['Authorization'] = 'Bearer $token';
+    // } else {
+    //   print("---> No token found for API");
+    //   // Handle the case where the token is not found
+    // }
+
+    final response = await http.get(
+      Uri.parse('$url/api/collections/income/records'),
+      // headers: headers,
+    );
+
+    print("---> JSON Status code :: Get Income List ::${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> items = data['items'];
+
+      return items.map((item) => IncomeModel.fromJson(item)).toList();
+    } else {
+      throw Exception('---> Failed to load income list');
     }
   }
 }

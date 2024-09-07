@@ -1,4 +1,6 @@
 import 'package:expenseecho/core/app_exports.dart';
+import 'package:expenseecho/presentation/home/home_screen/home_screen_controller.dart';
+import 'package:expenseecho/presentation/home/main_screen/main_screen_controller.dart';
 import 'package:expenseecho/presentation/onboarding/add_new_account/add_new_account_controller.dart';
 import 'package:expenseecho/presentation/onboarding/forgot_screen/forgot_screen_controller.dart';
 import 'package:expenseecho/presentation/onboarding/launch_screen/launch_screen_controller.dart';
@@ -46,5 +48,7 @@ class InitialBindings extends Bindings {
     Get.lazyPut(() => SettingsNotificationsScreenController(), fenix: true);
     Get.lazyPut(() => ExportDataScreenController(), fenix: true);
     Get.lazyPut(() => ExportDataSuccessController(), fenix: true);
+    Get.lazyPut(() => HomeScreenController(), fenix: true);
+    Get.lazyPut(() => MainScreenController(), fenix: true);
   }
 }

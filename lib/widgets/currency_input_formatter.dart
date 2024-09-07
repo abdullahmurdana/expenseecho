@@ -7,14 +7,14 @@ class CurrencyInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     if (newValue.text.isEmpty) {
-      return TextEditingValue(
+      return const TextEditingValue(
         text: '\$0',
         selection: TextSelection.collapsed(offset: 2),
       );
     }
 
     String newText = newValue.text.replaceAll('\$', '');
-    newText = '\$' + newText;
+    newText = '\$$newText';
 
     return TextEditingValue(
       text: newText,

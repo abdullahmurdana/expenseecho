@@ -39,11 +39,10 @@ class SetupPinController extends GetxController {
       await Future.delayed(
         const Duration(seconds: 3),
       );
-// TODO navigate to main screen after successful PIN
       if (verifyPin.value) {
         final savedPin = await SharedPreferencesHandler.getPin();
         if (otp.value == savedPin) {
-          // Get.offNamed(AppRoutes.mainScreen);
+          Get.offNamed(AppRoutes.mainScreen);
         } else {
           attempts.value++;
           if (attempts.value >= 3) {
@@ -54,15 +53,14 @@ class SetupPinController extends GetxController {
           }
         }
       } else {
-        // TODO navigate to main screen after setting PIN
         if (isConfirming.value) {
           confirmedPin.value = otp.value;
           if (await SharedPreferencesHandler.getPin() == null) {
             await SharedPreferencesHandler.savePin(confirmedPin.value);
-            // Get.offNamed(AppRoutes.mainScreen);
+            Get.offNamed(AppRoutes.mainScreen);
           } else {
             if (await SharedPreferencesHandler.getPin() == confirmedPin.value) {
-              // Get.offNamed(AppRoutes.mainScreen);
+              Get.offNamed(AppRoutes.mainScreen);
             } else {
               Get.snackbar('Error', 'PINs do not match. Try again.');
               isConfirming.value = false;

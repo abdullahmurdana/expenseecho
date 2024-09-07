@@ -1,9 +1,11 @@
+import 'package:expenseecho/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
 import 'package:expenseecho/widgets/custom_widgets.dart';
+import 'package:get/get.dart';
 
 class ExportDataSuccessScreen extends StatefulWidget {
   const ExportDataSuccessScreen({super.key});
@@ -55,8 +57,7 @@ class _ExportDataSuccessScreenState extends State<ExportDataSuccessScreen> {
                     child: buildElevatedButton(
                       size: size,
                       onTapped: () {
-                        // TODO navigate to main screen
-                        // return Get.toNamed(AppRoutes.mainScreen);
+                        return Get.toNamed(AppRoutes.mainScreen);
                       },
                       title: localization.lbl_back_to_main,
                       bgColor: violetColor,

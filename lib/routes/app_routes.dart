@@ -1,3 +1,5 @@
+import 'package:expenseecho/presentation/home/home_screen/home_screen.dart';
+import 'package:expenseecho/presentation/home/main_screen/main_screen.dart';
 import 'package:expenseecho/presentation/onboarding/add_new_account/add_new_account_screen.dart';
 import 'package:expenseecho/presentation/onboarding/forgot_screen/forgot_screen.dart';
 import 'package:expenseecho/presentation/onboarding/launch_screen/launch_screen.dart';
@@ -46,6 +48,9 @@ class AppRoutes {
   static const String settingsNotificationsScreen =
       '/settings_notification_screen';
 
+  static const String homeScreen = '/home_screen';
+  static const String mainScreen = '/main_screen';
+
   static List<GetPage> getPages = [
     GetPage(
       name: initialRoute,
@@ -55,6 +60,17 @@ class AppRoutes {
     //   name: onboardingLaunchScreen,
     //   page: () => const LaunchScreen(),
     // ),
+    GetPage(
+      name: homeScreen,
+      page: () => const HomeScreen(),
+    ),
+
+    GetPage(
+      name: mainScreen,
+      page: () => const MainScreen(
+        index: 0,
+      ),
+    ),
     GetPage(
       name: onboardingScreen,
       page: () => const OnboardingScreen(),
