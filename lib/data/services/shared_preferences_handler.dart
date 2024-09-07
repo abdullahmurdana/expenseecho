@@ -1,24 +1,27 @@
+import 'package:expenseecho/data/models/currency/currency_model.dart';
+import 'package:expenseecho/data/models/language/language_model.dart';
 import 'package:expenseecho/data/models/user_model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class SharedPreferencesHandler {
-  static const String _selectedCurrencyKey = 'selected_currency';
+  static const String _authTokenKey = 'auth_token';
+  static const String _budgetAlertKey = 'budget_alert';
   static const String _currenciesListKey = 'currencies_list';
-  static const String _themeKey = 'theme';
-  static const String _securityKey = 'security';
-  static const String _selectedLanguageKey = 'selected_language';
+  static const String _expenseAlertKey = 'expense_alert';
+  static const String _expenseCategoriesKey = 'expense_categories';
+  static const String _incomeCategoriesKey = 'income_categories';
   static const String _languagesListKey = 'languages_list';
+  static const String _securityKey = 'security';
+  static const String _selectedCurrencyKey = 'selected_currency';
+  static const String _selectedLanguageKey = 'selected_language';
+  static const String _themeKey = 'theme';
+  static const String _tipsArticlesKey = 'tips_articles';
   static const String _userKey = 'current_user';
   static const String _userPinKey = 'user_pin';
   static const String _userSignedInKey = 'user_signed_in';
-  static const String _authTokenKey = 'auth_token';
-  static const String _expenseAlertKey = 'expense_alert';
-  static const String _budgetAlertKey = 'budget_alert';
-  static const String _tipsArticlesKey = 'tips_articles';
-  static const String _expenseCategoriesKey = 'expense_categories';
-  static const String _incomeCategoriesKey = 'income_categories';
 
+  // User related
   static Future<void> clearAllUserData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_authTokenKey);
@@ -42,18 +45,6 @@ class SharedPreferencesHandler {
   static Future<void> clearAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_authTokenKey);
-  }
-
-  // Save theme to SharedPreferences
-  static Future<void> saveTheme(String theme) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_themeKey, theme);
-  }
-
-  // Get theme from SharedPreferences
-  static Future<String?> getTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_themeKey);
   }
 
   static Future<void> saveUserData(UserModel user) async {
@@ -106,5 +97,157 @@ class SharedPreferencesHandler {
     await prefs.remove(_userKey);
     await prefs.remove(_userSignedInKey);
     await prefs.remove(_authTokenKey);
+  }
+
+  // Save theme to SharedPreferences
+  static Future<void> saveTheme(String theme) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_themeKey, theme);
+  }
+
+  // Get theme from SharedPreferences
+  static Future<String?> getTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_themeKey);
+  }
+
+  // Save Expense Alert to SharedPreferences
+  static Future<void> saveExpenseAlert(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_expenseAlertKey, value);
+  }
+
+  // Get Expense Alert from SharedPreferences
+  static Future<bool?> getExpenseAlert() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_expenseAlertKey);
+  }
+
+  // Save Budget Alert to SharedPreferences
+  static Future<void> saveBudgetAlert(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_budgetAlertKey, value);
+  }
+
+  // Get Budget Alert from SharedPreferences
+  static Future<bool?> getBudgetAlert() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_budgetAlertKey);
+  }
+
+  // Save Tips & Articles to SharedPreferences
+  static Future<void> saveTipsArticles(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_tipsArticlesKey, value);
+  }
+
+  // Get Tips & Articles from SharedPreferences
+  static Future<bool?> getTipsArticles() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_tipsArticlesKey);
+  }
+
+  // Save Security to SharedPreferences
+  static Future<void> saveSecurity(String security) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_securityKey, security);
+  }
+
+  // Get Security from SharedPreferences
+  static Future<String?> getSecurity() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_securityKey);
+  }
+
+  // Save selected currency to SharedPreferences
+  static Future<void> saveSelectedCurrency(CurrencyModel currency) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_selectedCurrencyKey, jsonEncode(currency.toJson()));
+  }
+
+  // Get selected currency from SharedPreferences
+  static Future<CurrencyModel?> getSelectedCurrency() async {
+    final prefs = await SharedPreferences.getInstance();
+    final currencyString = prefs.getString(_selectedCurrencyKey);
+    print("---> Currency Data :: SP Handler :: ${currencyString.toString()}");
+
+    if (currencyString != null && currencyString.isNotEmpty) {
+      return CurrencyModel.fromJson(jsonDecode(currencyString));
+    }
+    return null;
+  }
+
+  // Save list of currencies to SharedPreferences
+  static Future<void> saveCurrencies(List<CurrencyModel> currencies) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> currencyStrings =
+        currencies.map((currency) => jsonEncode(currency.toJson())).toList();
+    await prefs.setStringList(_currenciesListKey, currencyStrings);
+    print("---> saved new currencies");
+  }
+
+  // Get list of currencies from SharedPreferences
+  static Future<List<CurrencyModel>> getCurrencies() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? currencyStrings = prefs.getStringList(_currenciesListKey);
+    if (currencyStrings != null) {
+      return currencyStrings
+          .map((currencyString) =>
+              CurrencyModel.fromJson(jsonDecode(currencyString)))
+          .toList();
+    }
+    print("---> fetched currencies list");
+    return [];
+  }
+
+  // Remove the List from shared preferences
+  static Future<void> removeCurrencies() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_currenciesListKey);
+    print("---> removed currencies list");
+  }
+
+  // Save selected language to SharedPreferences
+  static Future<void> saveSelectedLanguage(LanguageModel language) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_selectedLanguageKey, jsonEncode(language.toJson()));
+  }
+
+  // Get selected language from SharedPreferences
+  static Future<LanguageModel?> getSelectedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final languageString = prefs.getString(_selectedLanguageKey);
+    if (languageString != null) {
+      return LanguageModel.fromJson(jsonDecode(languageString));
+    }
+    return null;
+  }
+
+  // Save list of languages to SharedPreferences
+  static Future<void> saveLanguages(List<LanguageModel> languages) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> languageStrings =
+        languages.map((language) => jsonEncode(language.toJson())).toList();
+    await prefs.setStringList(_languagesListKey, languageStrings);
+  }
+
+  // Get list of languages from SharedPreferences
+  static Future<List<LanguageModel>> getLanguages() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? languageStrings = prefs.getStringList(_languagesListKey);
+    if (languageStrings != null) {
+      return languageStrings
+          .map((languageString) =>
+              LanguageModel.fromJson(jsonDecode(languageString)))
+          .toList();
+    }
+    return [];
+  }
+
+  /// Remove the List from shared preferences
+  static Future<void> removeLanguages() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_languagesListKey);
+    print("---> removed languages list");
   }
 }

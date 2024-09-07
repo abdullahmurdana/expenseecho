@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
-import 'package:expenseecho/routes/app_routes.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class SignUpSuccessScreen extends StatefulWidget {
   const SignUpSuccessScreen({super.key});

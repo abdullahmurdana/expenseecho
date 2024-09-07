@@ -9,6 +9,16 @@ import 'package:expenseecho/presentation/onboarding/setup_pin/setup_pin_screen.d
 import 'package:expenseecho/presentation/onboarding/sign_up_screen/sign_up_screen.dart';
 import 'package:expenseecho/presentation/onboarding/sign_up_success/sign_up_success_screen.dart';
 import 'package:expenseecho/presentation/onboarding/email_verification_screen/email_verification_screen.dart';
+import 'package:expenseecho/presentation/profile/account_screen/account_screen.dart';
+import 'package:expenseecho/presentation/profile/export_data/export_data_screen/export_data_screen.dart';
+import 'package:expenseecho/presentation/profile/export_data/export_data_success/export_data_success_screen.dart';
+import 'package:expenseecho/presentation/profile/profile_screen/profile_screen.dart';
+import 'package:expenseecho/presentation/profile/settings/settings_currency_screen/settings_currency_screen.dart';
+import 'package:expenseecho/presentation/profile/settings/settings_language_screen/settings_language_screen.dart';
+import 'package:expenseecho/presentation/profile/settings/settings_notifications_screen/settings_notifications_screen.dart';
+import 'package:expenseecho/presentation/profile/settings/settings_screen/settings_screen.dart';
+import 'package:expenseecho/presentation/profile/settings/settings_security_screen/settings_security_screen.dart';
+import 'package:expenseecho/presentation/profile/settings/settings_theme_screen/settings_theme_screen.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -24,6 +34,17 @@ class AppRoutes {
   static const String addNewAccountScreen = '/add_new_account_screen';
   static const String signupSuccessScreen = '/signup_success_screen';
   static const String resetPasswordScreen = '/reset_password_screen';
+  static const String profileScreen = '/profile_screen';
+  static const String accountScreen = '/account_screen';
+  static const String settingsScreen = '/settings_screen';
+  static const String settingsCurrencyScreen = '/settings_currency_screen';
+  static const String settingsLanguageScreen = '/settings_language_screen';
+  static const String settingsThemeScreen = '/settings_theme_screen';
+  static const String settingsSecurityScreen = '/settings_security_screen';
+  static const String exportDataScreen = '/export_data_screen';
+  static const String exportDataSuccessScreen = '/export_data_success_screen';
+  static const String settingsNotificationsScreen =
+      '/settings_notification_screen';
 
   static List<GetPage> getPages = [
     GetPage(
@@ -73,6 +94,46 @@ class AppRoutes {
     GetPage(
       name: signupSuccessScreen,
       page: () => const SignUpSuccessScreen(),
+    ),
+    GetPage(
+      name: profileScreen,
+      page: () => const ProfileScreen(),
+    ),
+    GetPage(
+      name: accountScreen,
+      page: () => const AccountScreen(),
+    ),
+    GetPage(
+      name: settingsScreen,
+      page: () => const SettingsScreen(),
+    ),
+    GetPage(
+      name: settingsCurrencyScreen,
+      page: () => const SettingsCurrencyScreen(),
+    ),
+    GetPage(
+      name: settingsLanguageScreen,
+      page: () => const SettingsLanguageScreen(),
+    ),
+    GetPage(
+      name: settingsThemeScreen,
+      page: () => const SettingsThemeScreen(),
+    ),
+    GetPage(
+      name: settingsSecurityScreen,
+      page: () => const SettingsSecurityScreen(),
+    ),
+    GetPage(
+      name: settingsNotificationsScreen,
+      page: () => const SettingsNotificationsScreen(),
+    ),
+    GetPage(
+      name: exportDataScreen,
+      page: () => const ExportDataScreen(),
+    ),
+    GetPage(
+      name: exportDataSuccessScreen,
+      page: () => const ExportDataSuccessScreen(),
     ),
   ];
 }
