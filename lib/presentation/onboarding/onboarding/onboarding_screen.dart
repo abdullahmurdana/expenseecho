@@ -58,8 +58,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final double designWidth = size.width;
 
     // Calculate dynamic sizes
-    final double imageCarouselHeight = designHeight * 0.73;
-    final double topVerticalGap = designHeight * 0.068;
+    final double imageCarouselHeight = designHeight * 0.72;
+    final double topVerticalGap = designHeight * 0.06;
     final double verticalGap = designHeight * 0.02;
     // final double horizontalGap = designHeight * 0.02;
 
@@ -122,7 +122,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           },
           child: Text(
             localization.txt_signup,
-            style: AppStyle.gfPoppinsMediumWhite(
+            style: AppStyle.poppinsMediumWhite(
                 fontSize: buttonTextSize), // Adjusted font size
           ),
         ),
@@ -140,10 +140,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           },
           child: Text(
             localization.txt_login,
-            style: AppStyle.gfPoppinsCustom(
-                fontSize: buttonTextSize,
-                color: violetColor,
-                fontWeight: FontWeight.w500), // Adjusted font size
+            style: AppStyle.poppinsCustom(
+              fontSize: buttonTextSize,
+              color: violetColor,
+              fontWeight: FontWeight.w500,
+            ), // Adjusted font size
           ),
         ),
       ],
@@ -153,11 +154,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget buildImageCarousel(List<String> titleTexts, List<String> subTitleTexts,
       double screenHeight, double screenWidth,
       {required double height}) {
-    var titleFontSize = screenHeight * 0.035;
-    var carouselHeight = screenHeight * 0.52;
+    var titleFontSize = screenHeight * 0.031;
+    var carouselHeight = screenHeight * 0.50;
     var horizontalPadding = screenWidth * 0.04;
     var verticalGap = screenHeight * 0.02;
-    var subtitleFontSize = screenHeight * 0.018;
+    var subtitleFontSize = screenHeight * 0.017;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -189,14 +190,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: [
                   Text(
                     titleTexts[_currentIndex],
-                    style: AppStyle.gfPoppinsBoldBlack(
+                    style: AppStyle.poppinsBoldBlack(
                       fontSize: titleFontSize, // Adjusted font size
                     ),
                     textAlign: TextAlign.center,
                   ),
                   Text(
                     subTitleTexts[_currentIndex],
-                    style: AppStyle.gfPoppinsCustom(
+                    style: AppStyle.poppinsCustom(
                       fontSize: subtitleFontSize, // Adjusted font size
                       color: lightThemeColor[20]!,
                       fontWeight: FontWeight.w300,

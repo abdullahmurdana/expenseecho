@@ -102,7 +102,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
       ),
       child: Text(
         localization.lbl_continue,
-        style: AppStyle.gfPoppinsMediumWhite(fontSize: 22),
+        style: AppStyle.poppinsMediumWhite(fontSize: 22),
       ),
     );
   }
@@ -151,7 +151,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
         children: [
           TextSpan(
             text: "Don't Worry\n",
-            style: AppStyle.gfPoppinsCustom(
+            style: AppStyle.poppinsCustom(
                 fontSize: 23,
                 color: darkThemeColor[75]!,
                 fontWeight: FontWeight.w700),
@@ -159,7 +159,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
           TextSpan(
             text:
                 "Enter your email and we’ll send you a link to reset your password.",
-            style: AppStyle.gfPoppinsCustom(
+            style: AppStyle.poppinsCustom(
                 fontSize: 23,
                 color: darkThemeColor[75]!,
                 fontWeight: FontWeight.w700),

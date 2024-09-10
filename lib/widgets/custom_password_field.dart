@@ -1,3 +1,4 @@
+import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
 
@@ -9,7 +10,7 @@ class PasswordField extends StatefulWidget {
   final double? height;
   final double? width;
   final String? Function(String?)? validator;
-  final Function(bool)? onFocusChanged; // Add this line
+  final Function(bool)? onFocusChanged;
 
   const PasswordField({
     super.key,
@@ -20,7 +21,7 @@ class PasswordField extends StatefulWidget {
     this.validator,
     this.height,
     this.width,
-    this.onFocusChanged, // Add this line
+    this.onFocusChanged,
   });
 
   @override
@@ -40,7 +41,7 @@ class _PasswordFieldState extends State<PasswordField> {
         _isFocused = _focusNode.hasFocus;
       });
       if (widget.onFocusChanged != null) {
-        widget.onFocusChanged!(_focusNode.hasFocus); // Add this line
+        widget.onFocusChanged!(_focusNode.hasFocus);
       }
     });
   }
@@ -98,9 +99,10 @@ class _PasswordFieldState extends State<PasswordField> {
                 onPressed: _toggleObscureText,
               ),
             ),
-            style: TextStyle(
+            style: AppStyle.poppinsCustom(
               color: darkThemeColor[50]!,
               fontSize: 16.0,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
@@ -112,7 +114,11 @@ class _PasswordFieldState extends State<PasswordField> {
             ),
             child: Text(
               widget.helperText!,
-              style: TextStyle(color: darkThemeColor[50]!, fontSize: 12.0),
+              style: AppStyle.poppinsCustom(
+                color: darkThemeColor[50]!,
+                fontSize: 12.0,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
       ],

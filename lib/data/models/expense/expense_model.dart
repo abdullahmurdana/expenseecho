@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 class ExpenseModel {
-  String id;
+  String? id;
   String userId;
   String accountId;
   String category;
@@ -10,12 +10,13 @@ class ExpenseModel {
   double expenseAmount;
   String? attachmentLink;
   bool repeated;
-  String endAfterDate;
-  String frequency;
-  String createdAt;
-  String updatedAt;
+  String? frequency;
+  String? endAfterDate;
+  String? startDate;
+  String? createdAt;
+  String? updatedAt;
   ExpenseModel({
-    required this.id,
+    this.id,
     required this.userId,
     required this.accountId,
     required this.category,
@@ -23,10 +24,11 @@ class ExpenseModel {
     required this.expenseAmount,
     this.attachmentLink,
     required this.repeated,
-    required this.endAfterDate,
-    required this.frequency,
-    required this.createdAt,
-    required this.updatedAt,
+    this.frequency,
+    this.endAfterDate,
+    this.startDate,
+    this.createdAt,
+    this.updatedAt,
   });
 
   ExpenseModel copyWith({
@@ -38,8 +40,9 @@ class ExpenseModel {
     double? expenseAmount,
     String? attachmentLink,
     bool? repeated,
-    String? endAfterDate,
     String? frequency,
+    String? endAfterDate,
+    String? startDate,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -52,8 +55,9 @@ class ExpenseModel {
       expenseAmount: expenseAmount ?? this.expenseAmount,
       attachmentLink: attachmentLink ?? this.attachmentLink,
       repeated: repeated ?? this.repeated,
-      endAfterDate: endAfterDate ?? this.endAfterDate,
       frequency: frequency ?? this.frequency,
+      endAfterDate: endAfterDate ?? this.endAfterDate,
+      startDate: startDate ?? this.startDate,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -69,8 +73,9 @@ class ExpenseModel {
       'expense_amount': expenseAmount,
       'attachment_link': attachmentLink,
       'repeated': repeated,
-      'end_after_date': endAfterDate,
       'frequency': frequency,
+      'end_after_date': endAfterDate,
+      'start_date': startDate,
       'created': createdAt,
       'updated': updatedAt,
     };
@@ -78,7 +83,7 @@ class ExpenseModel {
 
   factory ExpenseModel.fromMap(Map<String, dynamic> map) {
     return ExpenseModel(
-      id: map['id'] as String,
+      id: map['id'] != null ? map['id'] as String : null,
       userId: map['user_id'] as String,
       accountId: map['account_id'] as String,
       category: map['category'] as String,
@@ -88,10 +93,12 @@ class ExpenseModel {
           ? map['attachmentLink'] as String
           : null,
       repeated: map['repeated'] as bool,
-      endAfterDate: map['end_after_date'] as String,
-      frequency: map['frequency'] as String,
-      createdAt: map['created'] as String,
-      updatedAt: map['updated'] as String,
+      frequency: map['frequency'] != null ? map['frequency'] as String : null,
+      endAfterDate:
+          map['end_after_date'] != null ? map['endAfterDate'] as String : null,
+      startDate: map['start_date'] != null ? map['startDate'] as String : null,
+      createdAt: map['created'] != null ? map['createdAt'] as String : null,
+      updatedAt: map['updated'] != null ? map['updatedAt'] as String : null,
     );
   }
 
@@ -102,7 +109,7 @@ class ExpenseModel {
 
   @override
   String toString() {
-    return 'ExpenseModel(id: $id, userId: $userId, accountId: $accountId, category: $category, description: $description, expenseAmount: $expenseAmount, attachmentLink: $attachmentLink, repeated: $repeated, endAfterDate: $endAfterDate, frequency: $frequency, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ExpenseModel(id: $id, userId: $userId, accountId: $accountId, category: $category, description: $description, expenseAmount: $expenseAmount, attachmentLink: $attachmentLink, repeated: $repeated, frequency: $frequency, endAfterDate: $endAfterDate, startDate: $startDate, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -117,8 +124,9 @@ class ExpenseModel {
         other.expenseAmount == expenseAmount &&
         other.attachmentLink == attachmentLink &&
         other.repeated == repeated &&
-        other.endAfterDate == endAfterDate &&
         other.frequency == frequency &&
+        other.endAfterDate == endAfterDate &&
+        other.startDate == startDate &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt;
   }
@@ -133,8 +141,9 @@ class ExpenseModel {
         expenseAmount.hashCode ^
         attachmentLink.hashCode ^
         repeated.hashCode ^
-        endAfterDate.hashCode ^
         frequency.hashCode ^
+        endAfterDate.hashCode ^
+        startDate.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode;
   }

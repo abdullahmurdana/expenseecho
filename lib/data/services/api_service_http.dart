@@ -8,7 +8,7 @@ import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 import 'package:http/http.dart' as http;
 
 class ApiServiceHttp {
-  static const String url = 'https://b6ca-59-103-219-14.ngrok-free.app';
+  static const String url = 'https://d720-103-72-2-64.ngrok-free.app';
 
   static Future<Map<String, dynamic>> signInHttp({
     required String identity,
@@ -64,12 +64,14 @@ class ApiServiceHttp {
 
   // Getting all accounts and then filter according to user.
   static Future<List<AccountsModel>> fetchAccounts() async {
+    var uri = '$url/api/collections/accounts/records';
     final response = await http.get(
-      Uri.parse('$url/api/collections/accounts/records'),
+      Uri.parse(uri),
     );
 
     print(
         "---> JSON Status code :: Get Account List :: ${response.statusCode}");
+    print("---> URL :: Get Account List :: $uri");
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -98,23 +100,24 @@ class ApiServiceHttp {
   static Future<List<AccountsModel>> fetchAccountsByUserID(
       {required String userId}) async {
     // Get the user data from SharedPreferences
+    var uri = '$url/api/collections/accounts/records?fields=*,user_id=$userId';
     final response = await http.get(
-      Uri.parse(
-          '$url/api/collections/accounts/records?fields=*,user_id=$userId'),
+      Uri.parse(uri),
     );
 
     print(
-        "---> JSON Status code :: Get Account List :: ${response.statusCode}");
+        "---> JSON Status code :: Get Account List by ID :: ${response.statusCode}");
+    print("---> URL :: Get Account List by ID :: $uri");
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> items = data['items'];
 
-      print("---> Fetch Accounts By ID ::Items: $items");
+      // print("---> Fetch Accounts By ID ::Items: $items");
 
       // Map the items to AccountsModel
       return items.map((item) {
-        print("---> Item: $item");
+        // print("---> Item: $item");
         return AccountsModel.fromMap(item);
       }).toList();
     } else {
@@ -195,7 +198,7 @@ class ApiServiceHttp {
     }
   }
 
-  static Future<void> updateAccountBalance(
+  static Future<bool> updateAccountBalance(
       {required String accountId, required double newBalance}) async {
     final String uri = '$url/api/collections/accounts/records/$accountId';
 
@@ -212,16 +215,16 @@ class ApiServiceHttp {
     );
 
     if (response.statusCode == 200) {
-      print('Account balance updated successfully.');
+      print('---> Account balance updated successfully.');
+      return true;
     } else {
       print(
-          'Failed to update account balance. Status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+          '---> Failed to update account balance. Status code: ${response.statusCode}');
       throw Exception('Failed to update account balance');
     }
   }
 
-  Future<bool> addExpense(ExpenseModel expense) async {
+  static Future<bool> addExpense({required ExpenseModel expense}) async {
     final uri = Uri.parse('$url/api/collections/expenses/records');
     final response = await http.post(
       uri,

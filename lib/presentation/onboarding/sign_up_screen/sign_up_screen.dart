@@ -122,14 +122,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       _buildCheckBoxForTerms(localization: localization),
                       25.h,
                       buildElevatedButton(
-                        size: size,
+                        height: 56,
+                        width: size.width,
                         onTapped: () => Get.toNamed(
                             AppRoutes.emailVerificationScreen,
                             arguments: {'isResetPassword': false}),
                         title: localization.txt_signup,
                         bgColor: violetColor,
                         fgColor: lightThemeColor,
-                        textStyle: AppStyle.gfPoppinsMediumWhite(
+                        textStyle: AppStyle.poppinsMediumWhite(
                           fontSize: 22,
                         ),
                       ),
@@ -137,7 +138,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Center(
                         child: Text(
                           localization.lbl_or_with,
-                          style: AppStyle.gfPoppinsCustom(
+                          style: AppStyle.poppinsCustom(
                             fontSize: 14,
                             color: darkThemeColor[50]!,
                             fontWeight: FontWeight.bold,
@@ -182,11 +183,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               children: [
                 TextSpan(
                   text: localization.msg_by_signing_up_you1,
-                  style: AppStyle.gfPoppinsMediumBlack(fontSize: 14),
+                  style: AppStyle.poppinsMediumBlack(fontSize: 14),
                 ),
                 TextSpan(
                   text: localization.msg_by_signing_up_you2,
-                  style: AppStyle.gfPoppinsCustom(
+                  style: AppStyle.poppinsCustom(
                       fontSize: 15,
                       color: violetColor,
                       fontWeight: FontWeight.bold),
@@ -219,7 +220,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
       child: Text(
         localization.txt_signup,
-        style: AppStyle.gfPoppinsMediumWhite(fontSize: 22),
+        style: AppStyle.poppinsMediumWhite(fontSize: 22),
       ),
     );
   }
@@ -255,7 +256,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           15.w,
           Text(
             localization.msg_sign_up_with_google,
-            style: AppStyle.gfPoppinsCustom(
+            style: AppStyle.poppinsCustom(
                 fontSize: 24,
                 color: darkThemeColor[75]!,
                 fontWeight: FontWeight.bold),
@@ -274,11 +275,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         children: [
           TextSpan(
             text: '${localization.msg_already_have_an} ',
-            style: AppStyle.gfPoppinsMediumBlack(fontSize: 14),
+            style: AppStyle.poppinsMediumBlack(fontSize: 14),
           ),
           TextSpan(
             text: localization.txt_login,
-            style: AppStyle.gfPoppinsCustom(
+            style: AppStyle.poppinsCustom(
                 fontSize: 15, color: violetColor, fontWeight: FontWeight.bold),
             recognizer: TapGestureRecognizer()
               ..onTap = () {

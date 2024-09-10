@@ -1,4 +1,4 @@
-import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new.dart';
+import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new_screen.dart';
 import 'package:expenseecho/presentation/home/home_screen/home_screen.dart';
 import 'package:expenseecho/presentation/home/main_screen/main_screen.dart';
 import 'package:expenseecho/presentation/onboarding/add_new_account/add_new_account_screen.dart';

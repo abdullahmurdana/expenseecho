@@ -90,7 +90,7 @@ class _SettingsThemeScreenState extends State<SettingsThemeScreen> {
       ),
       title: Text(
         localization.lbl_theme,
-        style: AppStyle.gfPoppinsRegularBlack(fontSize: 18),
+        style: AppStyle.poppinsRegularBlack(fontSize: 18),
       ),
       centerTitle: true,
       backgroundColor: lightThemeColor,

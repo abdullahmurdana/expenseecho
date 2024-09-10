@@ -44,12 +44,12 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
         children: <Widget>[
           Text(
             "Let's setup your account",
-            style: AppStyle.gfPoppinsMediumBlack(fontSize: 32),
+            style: AppStyle.poppinsMediumBlack(fontSize: 32),
           ),
           20.h,
           Text(
             "Account can be your bank, credit card or your wallet.",
-            style: AppStyle.gfPoppinsRegularBlack(fontSize: 15),
+            style: AppStyle.poppinsRegularBlack(fontSize: 15),
           ),
         ],
       ),
@@ -73,28 +73,8 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
         ),
         child: Text(
           "Let's Go",
-          style: AppStyle.gfPoppinsMediumWhite(fontSize: 22),
+          style: AppStyle.poppinsMediumWhite(fontSize: 22),
         ),
-      ),
-    );
-  }
-
-  _buildElevatedButton({required Size size}) {
-    return ElevatedButton(
-      onPressed: () {
-        Get.toNamed(AppRoutes.emailVerificationScreen);
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: violetColor,
-        foregroundColor: lightThemeColor,
-        fixedSize: Size(size.width, 60),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
-      child: Text(
-        "Let's Go",
-        style: AppStyle.gfPoppinsMediumWhite(fontSize: 22),
       ),
     );
   }

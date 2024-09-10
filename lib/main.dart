@@ -1,12 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+
 import 'package:expenseecho/core/utils/initial_bindings.dart';
 import 'package:expenseecho/core/utils/theme_manager.dart';
 import 'package:expenseecho/data/models/language/language_model.dart';
 import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 import 'package:expenseecho/routes/app_routes.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

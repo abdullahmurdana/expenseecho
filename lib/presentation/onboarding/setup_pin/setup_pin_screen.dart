@@ -76,7 +76,7 @@ class SetupPinScreen extends StatelessWidget {
         controller.isConfirming.value
             ? localization.lbl_confirm_pin
             : localization.lbl_enter_pin,
-        style: AppStyle.gfPoppinsMediumWhite(fontSize: 24),
+        style: AppStyle.poppinsMediumWhite(fontSize: 24),
       ),
     );
   }
@@ -193,7 +193,7 @@ class SetupPinScreen extends StatelessWidget {
       ),
       child: Text(
         '$digit',
-        style: AppStyle.gfPoppinsBoldWhite(fontSize: 30),
+        style: AppStyle.poppinsBoldWhite(fontSize: 30),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:expenseecho/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,9 +10,9 @@ import 'package:expenseecho/presentation/profile/profile_screen/profile_screen.d
 import 'package:expenseecho/widgets/expandable_fab.dart';
 
 class MainScreen extends StatefulWidget {
-  final int index;
-
   const MainScreen({super.key, required this.index});
+
+  final int index;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -19,23 +20,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final controller = Get.find<MainScreenController>();
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Obx(() => IndexedStack(
-            index: controller.bottomNavIndex.value,
-            children: const [
-              HomeScreen(),
-              HomeScreen(),
-              HomeScreen(),
-              ProfileScreen(),
-            ],
-          )),
-      bottomNavigationBar: _buildAnimatedBottomNavbar(controller),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: _buildFAB(),
-    );
-  }
 
   Widget _buildAnimatedBottomNavbar(MainScreenController controller) {
     return Obx(
@@ -94,7 +78,7 @@ class _MainScreenState extends State<MainScreen> {
           icon: Image.asset("assets/icons/transfer_icon_light.png"),
           onPressed: () {
             // TODO Navigate to Add Transfer screen
-            // Get.toNamed(AppRoutes.transferAddNewScreen);
+            Get.toNamed(AppRoutes.transferAddNewScreen);
           },
           heroTag: 'transfer',
         ),
@@ -102,12 +86,30 @@ class _MainScreenState extends State<MainScreen> {
           color: redThemeColor,
           icon: Image.asset("assets/icons/expense_icon_light.png"),
           onPressed: () {
-            // TODO Navigate to Add Transfer screen
-            // Get.toNamed(AppRoutes.expenseAddNewScreen);
+            // TODO Navigate to Add Expense screen
+            Get.toNamed(AppRoutes.expenseAddNewScreen);
           },
           heroTag: 'expense',
         )
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Obx(() => IndexedStack(
+            index: controller.bottomNavIndex.value,
+            children: const [
+              HomeScreen(),
+              HomeScreen(),
+              HomeScreen(),
+              ProfileScreen(),
+            ],
+          )),
+      bottomNavigationBar: _buildAnimatedBottomNavbar(controller),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: _buildFAB(),
     );
   }
 }

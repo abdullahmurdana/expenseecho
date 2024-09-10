@@ -10,6 +10,9 @@ import 'package:expenseecho/presentation/onboarding/login_screen/login_screen_co
 import 'package:expenseecho/routes/app_routes.dart';
 import 'package:expenseecho/widgets/custom_password_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
+import 'package:expenseecho/widgets/blurred_background_widget.dart';
+import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -42,78 +45,90 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final localization = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(localization.txt_login),
-        backgroundColor: lightThemeColor,
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: const Icon(
-            Icons.arrow_back_outlined,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Container(
-          color: lightThemeColor,
-          width: size.width,
-          height: size.height,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30,
+    return Obx(() {
+      return Stack(
+        children: [
+          Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text(localization.txt_login),
+              backgroundColor: lightThemeColor,
+              leading: IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: const Icon(
+                  Icons.arrow_back_outlined,
+                ),
+              ),
             ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  30.h,
-                  _buildTextField(
-                    controller: _emailcontroller,
-                    hintText: localization.lbl_hint_enter_email,
-                    labelText: localization.lbl_email,
-                    obscureText: false,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return localization.msg_enter_email;
-                      }
-                      if (!isEmailValid(value, isRequired: true)) {
-                        return localization.msg_enter_valid_email;
-                      }
-                      return null;
-                    },
+            body: SafeArea(
+              child: Container(
+                color: lightThemeColor,
+                width: size.width,
+                height: size.height,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        30.h,
+                        _buildTextField(
+                          controller: _emailcontroller,
+                          hintText: localization.lbl_hint_enter_email,
+                          labelText: localization.lbl_email,
+                          obscureText: false,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return localization.msg_enter_email;
+                            }
+                            if (!isEmailValid(value, isRequired: true)) {
+                              return localization.msg_enter_valid_email;
+                            }
+                            return null;
+                          },
+                        ),
+                        15.h,
+                        PasswordField(
+                          controller: _passwordcontroller,
+                          hintText: localization.lbl_hint_enter_password,
+                          labelText: localization.lbl_password,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return localization.msg_enter_password;
+                            }
+                            if (!isPasswordValid(value, isRequired: true)) {
+                              return localization.msg_enter_valid_password;
+                            }
+                            return null;
+                          },
+                        ),
+                        35.h,
+                        _buildLoginButton(
+                            size: size, localization: localization),
+                        25.h,
+                        _buildForgotPasswordButton(localization: localization),
+                        25.h,
+                        _buildCreateNewAccountTextButton(
+                            localization: localization),
+                      ],
+                    ),
                   ),
-                  15.h,
-                  PasswordField(
-                    controller: _passwordcontroller,
-                    hintText: localization.lbl_hint_enter_password,
-                    labelText: localization.lbl_password,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return localization.msg_enter_password;
-                      }
-                      if (!isPasswordValid(value, isRequired: true)) {
-                        return localization.msg_enter_valid_password;
-                      }
-                      return null;
-                    },
-                  ),
-                  35.h,
-                  _buildLoginButton(size: size, localization: localization),
-                  25.h,
-                  _buildForgotPasswordButton(localization: localization),
-                  25.h,
-                  _buildCreateNewAccountTextButton(localization: localization),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    );
+          if (loginController.isLoading.value)
+            const Positioned.fill(
+              child: BlurredBackground(
+                child: CustomLoadingIndicator(),
+              ),
+            ),
+        ],
+      );
+    });
   }
 
   _buildCreateNewAccountTextButton({required AppLocalizations localization}) {
@@ -125,14 +140,14 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           TextSpan(
             text: "Don't have an account yet? ",
-            style: AppStyle.gfPoppinsCustom(
+            style: AppStyle.poppinsCustom(
                 fontSize: 14,
                 color: darkThemeColor[50]!,
                 fontWeight: FontWeight.w400),
           ),
           TextSpan(
             text: 'Sign Up',
-            style: AppStyle.gfPoppinsCustom(
+            style: AppStyle.poppinsCustom(
                 fontSize: 15,
                 color: violetColor,
                 fontWeight: FontWeight.bold,
@@ -155,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Text(
         localization.msg_forgot_password,
         textAlign: TextAlign.left,
-        style: AppStyle.gfPoppinsCustom(
+        style: AppStyle.poppinsCustom(
           fontSize: 16,
           color: violetColor,
           fontWeight: FontWeight.bold,
@@ -166,47 +181,40 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _buildLoginButton(
       {required Size size, required AppLocalizations localization}) {
-    return Obx(() {
-      return ElevatedButton(
-        onPressed: loginController.isLoading.value
-            ? null
-            : () async {
-                String email = _emailcontroller.text;
-                String password = _passwordcontroller.text;
-                bool success = await loginController.signIn(
-                    email: email, password: password);
-                if (success) {
-                  final pin = await SharedPreferencesHandler.getPin();
-                  print(
-                      "---> Launch Screen Controller :: PIN Available :: ${pin?.isNotEmpty}");
-                  if (pin != null) {
-                    Get.offNamed(AppRoutes.setupPinScreen,
-                        arguments: {'verifyPin': true});
-                  } else {
-                    Get.offNamed(AppRoutes.setupPinScreen,
-                        arguments: {'verifyPin': false});
-                  }
+    return ElevatedButton(
+      onPressed: loginController.isLoading.value
+          ? null
+          : () async {
+              String email = _emailcontroller.text;
+              String password = _passwordcontroller.text;
+              bool success = await loginController.signIn(
+                  email: email, password: password);
+              if (success) {
+                final pin = await SharedPreferencesHandler.getPin();
+                print(
+                    "---> Launch Screen Controller :: PIN Available :: ${pin?.isNotEmpty}");
+                if (pin != null) {
+                  Get.offNamed(AppRoutes.setupPinScreen,
+                      arguments: {'verifyPin': true});
+                } else {
+                  Get.offNamed(AppRoutes.setupPinScreen,
+                      arguments: {'verifyPin': false});
                 }
-              },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: violetColor,
-          foregroundColor: lightThemeColor,
-          fixedSize: Size(size.width, 60),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+              }
+            },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: violetColor,
+        foregroundColor: lightThemeColor,
+        fixedSize: Size(size.width, 60),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
-        child: loginController.isLoading.value
-            ? const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(lightThemeColor),
-                backgroundColor: violetColor,
-              )
-            : Text(
-                localization.txt_login,
-                style: AppStyle.gfPoppinsMediumWhite(fontSize: 22),
-              ),
-      );
-    });
+      ),
+      child: Text(
+        localization.txt_login,
+        style: AppStyle.poppinsMediumWhite(fontSize: 22),
+      ),
+    );
   }
 
   Widget _buildTextField({

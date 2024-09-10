@@ -1,4 +1,5 @@
 import 'package:expenseecho/data/models/accounts/accounts_model.dart';
+import 'package:expenseecho/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:expenseecho/core/utils/app_styles.dart';
@@ -29,15 +30,16 @@ class _AccountScreenState extends State<AccountScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
         child: buildElevatedButton(
-          size: size,
+          height: 56,
+          width: size.width,
 
-          // TODO Add navigation to this button
-          onTapped: () {},
+          // Add navigation to this button
+          onTapped: () => Get.offAllNamed(AppRoutes.mainScreen),
           title: "Add new wallet",
           bgColor: violetColor,
           fgColor: lightThemeColor,
           iconData: Icons.add,
-          textStyle: AppStyle.gfPoppinsRegularWhite(fontSize: 20),
+          textStyle: AppStyle.poppinsRegularWhite(fontSize: 20),
         ),
       ),
       body: SafeArea(
@@ -63,7 +65,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         leading: buildLeadingIcon(account: account),
                         title: Text(
                           account.name,
-                          style: AppStyle.gfPoppinsMediumBlack(
+                          style: AppStyle.poppinsMediumBlack(
                             fontSize: 20,
                           ),
                         ),
@@ -71,7 +73,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           width: 100,
                           child: Text(
                             '\$${account.balance.toInt()}',
-                            style: AppStyle.gfPoppinsMediumBlack(
+                            style: AppStyle.poppinsMediumBlack(
                               fontSize: 20,
                             ),
                           ),
@@ -164,7 +166,7 @@ class _AccountScreenState extends State<AccountScreen> {
               children: <Widget>[
                 Text(
                   localization.lbl_account_balance,
-                  style: AppStyle.gfPoppinsCustom(
+                  style: AppStyle.poppinsCustom(
                     fontSize: 15,
                     color: darkThemeColor[50]!,
                     fontWeight: FontWeight.w400,
@@ -177,7 +179,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       .toInt();
                   return Text(
                     '\$ $totalBalance',
-                    style: AppStyle.gfPoppinsBoldBlack(fontSize: 40),
+                    style: AppStyle.poppinsBoldBlack(fontSize: 40),
                   );
                 }),
               ],
@@ -192,7 +194,7 @@ class _AccountScreenState extends State<AccountScreen> {
     return AppBar(
       title: Text(
         localization.lbl_account,
-        style: AppStyle.gfPoppinsRegularBlack(fontSize: 20),
+        style: AppStyle.poppinsRegularBlack(fontSize: 20),
       ),
       centerTitle: true,
       backgroundColor: lightThemeColor,

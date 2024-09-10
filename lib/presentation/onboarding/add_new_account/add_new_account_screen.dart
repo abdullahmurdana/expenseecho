@@ -17,7 +17,7 @@ class AddNewAccountScreen extends GetView<AddNewAccountController> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add new account',
-            style: AppStyle.gfPoppinsCustom(
+            style: AppStyle.poppinsCustom(
                 fontSize: 18,
                 color: lightThemeColor,
                 fontWeight: FontWeight.w500)),
@@ -41,7 +41,7 @@ class AddNewAccountScreen extends GetView<AddNewAccountController> {
                   children: <Widget>[
                     Text(
                       "Balance",
-                      style: AppStyle.gfPoppinsCustom(
+                      style: AppStyle.poppinsCustom(
                           fontSize: 16,
                           color: lightThemeColor[20]!,
                           fontWeight: FontWeight.w500),
@@ -49,7 +49,7 @@ class AddNewAccountScreen extends GetView<AddNewAccountController> {
                     15.h,
                     Text(
                       "\$ 00.0",
-                      style: AppStyle.gfPoppinsCustom(
+                      style: AppStyle.poppinsCustom(
                           fontSize: 40,
                           color: lightThemeColor,
                           fontWeight: FontWeight.bold),
@@ -137,7 +137,7 @@ class AddNewAccountScreen extends GetView<AddNewAccountController> {
       ),
       child: Text(
         'Continue',
-        style: AppStyle.gfPoppinsMediumWhite(fontSize: 22),
+        style: AppStyle.poppinsMediumWhite(fontSize: 22),
       ),
     );
   }

@@ -93,7 +93,7 @@ class _SettingsLanguageScreenState extends State<SettingsLanguageScreen> {
       ),
       title: Text(
         localization.lbl_language,
-        style: AppStyle.gfPoppinsRegularBlack(fontSize: 18),
+        style: AppStyle.poppinsRegularBlack(fontSize: 18),
       ),
       centerTitle: true,
       backgroundColor: lightThemeColor,

@@ -40,7 +40,7 @@ class _SignUpSuccessScreenState extends State<SignUpSuccessScreen> {
             15.h,
             Text(
               localization.msg_you_all_set,
-              style: AppStyle.gfPoppinsMediumBlack(fontSize: 18),
+              style: AppStyle.poppinsMediumBlack(fontSize: 18),
             ),
           ],
         ),

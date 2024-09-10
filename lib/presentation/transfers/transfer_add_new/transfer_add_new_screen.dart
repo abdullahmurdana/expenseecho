@@ -51,7 +51,7 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
         centerTitle: true,
         title: Text(
           localization.lbl_transfer,
-          style: AppStyle.gfPoppinsCustom(
+          style: AppStyle.poppinsCustom(
             fontSize: 20,
             color: lightThemeColor,
             fontWeight: FontWeight.w400,
@@ -245,7 +245,7 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                               ),
                               Text(
                                 localization.lbl_add_attachment,
-                                style: AppStyle.gfPoppinsCustom(
+                                style: AppStyle.poppinsCustom(
                                   fontSize: 16,
                                   color: lightThemeColor[20]!,
                                   fontWeight: FontWeight.w400,
@@ -285,7 +285,8 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                           return controller.loading.value
                               ? const CircularProgressIndicator()
                               : buildElevatedButton(
-                                  size: size,
+                                  height: 56,
+                                  width: size.width,
                                   onTapped: () async {
                                     final attachment =
                                         controller.attachment.value;
@@ -327,7 +328,7 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                 children: [
                   Text(
                     localization.lbl_how_much,
-                    style: AppStyle.gfPoppinsCustom(
+                    style: AppStyle.poppinsCustom(
                       fontSize: 20,
                       color: lightThemeColor[80]!,
                       fontWeight: FontWeight.w500,
@@ -341,10 +342,9 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: '\$0',
-                            hintStyle:
-                                AppStyle.gfPoppinsBoldWhite(fontSize: 50),
+                            hintStyle: AppStyle.poppinsBoldWhite(fontSize: 50),
                           ),
-                          style: AppStyle.gfPoppinsBoldWhite(fontSize: 50),
+                          style: AppStyle.poppinsBoldWhite(fontSize: 50),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,

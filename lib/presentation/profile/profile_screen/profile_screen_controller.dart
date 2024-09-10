@@ -4,6 +4,12 @@ import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 
 class ProfileScreenController extends GetxController {
   var user = Rxn<UserModel>();
+  final _isLoading = false.obs;
+  bool get isLoading => _isLoading.value;
+
+  void setLoading(bool newValue) {
+    _isLoading.value = newValue;
+  }
 
   @override
   void onInit() {

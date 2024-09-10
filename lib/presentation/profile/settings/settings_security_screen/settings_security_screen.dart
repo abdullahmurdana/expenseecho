@@ -94,7 +94,7 @@ class _SettingsSecurityScreenState extends State<SettingsSecurityScreen> {
       ),
       title: Text(
         localization.lbl_currency,
-        style: AppStyle.gfPoppinsRegularBlack(fontSize: 18),
+        style: AppStyle.poppinsRegularBlack(fontSize: 18),
       ),
       centerTitle: true,
       backgroundColor: lightThemeColor,

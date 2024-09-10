@@ -43,7 +43,7 @@ class _ExportDataSuccessScreenState extends State<ExportDataSuccessScreen> {
                     Text(
                       localization.msg_export_success,
                       softWrap: true,
-                      style: AppStyle.gfPoppinsCustom(
+                      style: AppStyle.poppinsCustom(
                         fontSize: 15,
                         color: darkThemeColor[75]!,
                         fontWeight: FontWeight.w500,
@@ -55,7 +55,8 @@ class _ExportDataSuccessScreenState extends State<ExportDataSuccessScreen> {
                   padding: const EdgeInsets.only(bottom: 25.0),
                   child: Center(
                     child: buildElevatedButton(
-                      size: size,
+                      height: 56,
+                      width: size.width,
                       onTapped: () {
                         return Get.toNamed(AppRoutes.mainScreen);
                       },

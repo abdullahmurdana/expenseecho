@@ -128,7 +128,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                               horizontal: horizontalPadding),
                           child: Text(
                             timerText,
-                            style: AppStyle.gfPoppinsCustom(
+                            style: AppStyle.poppinsCustom(
                                 fontSize: timerFontSize,
                                 color: violetColor,
                                 fontWeight: FontWeight.w600),
@@ -155,7 +155,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                           padding: EdgeInsets.symmetric(
                               horizontal: horizontalPadding),
                           child: buildElevatedButton(
-                            size: size,
+                            height: 56,
+                            width: size.width,
                             onTapped: () {},
                             title: localization.lbl_verify,
                             bgColor: violetColor,
@@ -202,17 +203,17 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         text: TextSpan(children: [
       TextSpan(
           text: localization.msg_sent_verify_email_txt1,
-          style: AppStyle.gfPoppinsMediumBlack(fontSize: textFontSize)),
+          style: AppStyle.poppinsMediumBlack(fontSize: textFontSize)),
       TextSpan(
         text: _email,
-        style: AppStyle.gfPoppinsCustom(
+        style: AppStyle.poppinsCustom(
             fontSize: textFontSize,
             color: violetColor,
             fontWeight: FontWeight.w600),
       ),
       TextSpan(
           text: localization.msg_sent_verify_email_txt2,
-          style: AppStyle.gfPoppinsMediumBlack(fontSize: textFontSize)),
+          style: AppStyle.poppinsMediumBlack(fontSize: textFontSize)),
     ]));
   }
 
@@ -222,7 +223,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       child: Text(
         localization.lbl_didnt_received_email,
         textAlign: TextAlign.left,
-        style: AppStyle.gfPoppinsCustom(
+        style: AppStyle.poppinsCustom(
           fontSize: textFontSize,
           color: violetColor,
           fontWeight: FontWeight.bold,
@@ -241,7 +242,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         localization.lbl_enter_verification,
         maxLines: 2,
         softWrap: true,
-        style: AppStyle.gfPoppinsMediumBlack(fontSize: titleFontSize),
+        style: AppStyle.poppinsMediumBlack(fontSize: titleFontSize),
       ),
     );
   }
@@ -258,7 +259,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   padding: EdgeInsets.only(right: otpFontSize),
                   child: Text(
                     controller.otp.value[index],
-                    style: AppStyle.gfPoppinsMediumBlack(fontSize: otpFontSize),
+                    style: AppStyle.poppinsMediumBlack(fontSize: otpFontSize),
                   ),
                 )
               : Container(
@@ -378,7 +379,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       ),
       child: Text(
         '$digit',
-        style: AppStyle.gfPoppinsMediumBlack(fontSize: screenHeight * 0.03),
+        style: AppStyle.poppinsMediumBlack(fontSize: screenHeight * 0.03),
       ),
     );
   }

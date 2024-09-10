@@ -9,6 +9,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:image_picker/image_picker.dart';
 
+Widget buildSwitchTile(
+    {required String title,
+    required String? subtitle,
+    required bool value,
+    required ValueChanged<bool> onChanged}) {
+  return SwitchListTile(
+    title: Text(
+      title,
+      style: AppStyle.poppinsCustom(
+        fontSize: 15,
+        color: darkThemeColor[100]!,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    subtitle: Text(
+      subtitle ?? '',
+      style: AppStyle.poppinsCustom(
+        fontSize: 13,
+        color: darkThemeColor[25]!,
+        fontWeight: FontWeight.w300,
+      ),
+    ),
+    activeColor: lightThemeColor,
+    activeTrackColor: violetColor,
+    inactiveThumbColor: lightThemeColor,
+    inactiveTrackColor: violetColor[20],
+    trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+      if (!states.contains(WidgetState.selected)) {
+        return lightThemeColor; // Active thumb color
+      }
+      return violetColor; // Inactive thumb color
+    }),
+    value: value,
+    onChanged: onChanged,
+  );
+}
+
 Widget buildSeperator(BuildContext context, int index) => const Divider(
       endIndent: 20,
       indent: 10,
@@ -16,13 +53,14 @@ Widget buildSeperator(BuildContext context, int index) => const Divider(
     );
 
 buildElevatedButton({
-  required Size size,
+  required double height,
+  required double width,
   required Function() onTapped,
   IconData? iconData,
   String? imagePath,
   required String title,
-  required MaterialColor bgColor,
-  MaterialColor? fgColor,
+  required Color bgColor,
+  Color? fgColor,
   TextStyle? textStyle,
 }) {
   return ElevatedButton(
@@ -30,7 +68,7 @@ buildElevatedButton({
     style: ElevatedButton.styleFrom(
       backgroundColor: bgColor,
       foregroundColor: fgColor ?? lightThemeColor,
-      fixedSize: Size(size.width, 60),
+      fixedSize: Size(width, height),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -55,9 +93,46 @@ buildElevatedButton({
         15.w,
         Text(
           title,
-          style: textStyle ?? AppStyle.gfPoppinsMediumWhite(fontSize: 22),
+          style: textStyle ?? AppStyle.poppinsMediumWhite(fontSize: 22),
         ),
       ],
+    ),
+  );
+}
+
+Widget buildStringListDropdown({
+  required String labelText,
+  required String value,
+  required List<String> items,
+  required void Function(String?)? onChanged,
+  required bool isEnabled,
+}) {
+  return Expanded(
+    child: DropdownButtonFormField<String>(
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(12),
+          ),
+          borderSide: BorderSide(
+            color: lightThemeColor[20]!,
+            width: 1,
+          ),
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(12, 10, 7, 12),
+      ),
+      value: value,
+      items: items.map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(
+            value,
+            style: AppStyle.poppinsRegularBlack(fontSize: 16),
+          ),
+        );
+      }).toList(),
+      onChanged: isEnabled ? onChanged : null,
     ),
   );
 }
@@ -138,7 +213,7 @@ Widget _buildButton({
           const SizedBox(height: 5),
           Text(
             label,
-            style: AppStyle.gfPoppinsCustom(
+            style: AppStyle.poppinsCustom(
               fontSize: 12,
               color: violetColor,
               fontWeight: FontWeight.w500,

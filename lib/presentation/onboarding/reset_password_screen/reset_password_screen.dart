@@ -60,7 +60,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 32.h,
                 buildElevatedButton(
-                  size: size,
+                  height: 56,
+                  width: size.width,
                   onTapped: () {},
                   title: localization.lbl_reset_password,
                   bgColor: violetColor,

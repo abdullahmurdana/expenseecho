@@ -9,6 +9,8 @@ import 'package:expenseecho/core/utils/theme_colors.dart';
 import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 import 'package:expenseecho/presentation/profile/profile_screen/profile_screen_controller.dart';
 import 'package:expenseecho/routes/app_routes.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
+import 'package:expenseecho/widgets/blurred_background_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,129 +21,145 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final profileScreenController = Get.find<ProfileScreenController>();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final localization = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          width: size.width,
-          height: size.height,
-          color: lightThemeColor[60],
-          child: Column(
-            children: <Widget>[
-              60.h,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Obx(() {
+          return Stack(
+            children: [
+              Container(
+                width: size.width,
+                height: size.height,
+                color: lightThemeColor[60],
+                child: Column(
                   children: <Widget>[
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 40,
-                          backgroundColor: greenThemeColor,
-                          child: ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: profileScreenController
-                                          .user.value?.avatarLink.isNotEmpty ==
-                                      true
-                                  ? profileScreenController
-                                      .user.value!.avatarLink
-                                  : "https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671122.jpg", // Provide a default valid URL
-                              placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
-                              errorWidget: (context, url, error) => Image.asset(
-                                  "assets/images/avatar_image_1.png"),
-                              fit: BoxFit.cover,
-                              width: 78,
-                              height: 78,
-                              filterQuality: FilterQuality.high,
+                    60.h,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 40,
+                                backgroundColor: greenThemeColor,
+                                child: ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: profileScreenController.user.value
+                                                ?.avatarLink.isNotEmpty ==
+                                            true
+                                        ? profileScreenController
+                                            .user.value!.avatarLink
+                                        : "https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671122.jpg", // Provide a default valid URL
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                            "assets/images/avatar_image_1.png"),
+                                    fit: BoxFit.cover,
+                                    width: 78,
+                                    height: 78,
+                                    filterQuality: FilterQuality.high,
+                                  ),
+                                ),
+                              ),
+                              15.w,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    localization.lbl_username,
+                                    style: AppStyle.poppinsCustom(
+                                        fontSize: 13,
+                                        color: darkThemeColor[25]!,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  Text(
+                                    profileScreenController
+                                            .user.value?.username ??
+                                        'Default',
+                                    style: AppStyle.poppinsMediumBlack(
+                                        fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: Image.asset(
+                              "assets/icons/pencil_icon.png",
+                              height: 50,
+                              width: 50,
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    30.h,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Container(
+                        width: size.width,
+                        height: 370,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: lightThemeColor,
                         ),
-                        15.w,
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(
                           children: <Widget>[
-                            Text(
-                              localization.lbl_username,
-                              style: AppStyle.gfPoppinsCustom(
-                                  fontSize: 13,
-                                  color: darkThemeColor[25]!,
-                                  fontWeight: FontWeight.w400),
+                            _buildButtonTile(
+                              onTapped: () =>
+                                  Get.toNamed(AppRoutes.accountScreen),
+                              titleText: localization.lbl_account,
+                              assetPath: "assets/icons/wallet_icon.png",
+                              iconBgColor: violetColor[20],
                             ),
-                            Text(
-                              profileScreenController.user.value?.username ??
-                                  'Default',
-                              style:
-                                  AppStyle.gfPoppinsMediumBlack(fontSize: 20),
+                            _buildDivider(),
+                            _buildButtonTile(
+                              onTapped: () =>
+                                  Get.toNamed(AppRoutes.settingsScreen),
+                              titleText: localization.lbl_settings,
+                              assetPath: "assets/icons/settings_icon.png",
+                              iconBgColor: violetColor[20],
+                            ),
+                            _buildDivider(),
+                            _buildButtonTile(
+                              onTapped: () =>
+                                  Get.toNamed(AppRoutes.exportDataScreen),
+                              titleText: localization.lbl_export_data,
+                              assetPath: "assets/icons/upload_icon.png",
+                              iconBgColor: violetColor[20],
+                            ),
+                            _buildDivider(),
+                            _buildButtonTile(
+                              onTapped: () {
+                                showLogoutBottomSheet(context,
+                                    localization: localization, size: size);
+                              },
+                              titleText: localization.lbl_logout,
+                              assetPath: "assets/icons/logout_icon_red.png",
+                              iconBgColor: redThemeColor[20],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Image.asset(
-                        "assets/icons/pencil_icon.png",
-                        height: 50,
-                        width: 50,
                       ),
                     ),
                   ],
                 ),
               ),
-              30.h,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Container(
-                  width: size.width,
-                  height: 370,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: lightThemeColor,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      _buildButtonTile(
-                        onTapped: () => Get.toNamed(AppRoutes.accountScreen),
-                        titleText: localization.lbl_account,
-                        assetPath: "assets/icons/wallet_icon.png",
-                        iconBgColor: violetColor[20],
-                      ),
-                      _buildDivider(),
-                      _buildButtonTile(
-                        onTapped: () => Get.toNamed(AppRoutes.settingsScreen),
-                        titleText: localization.lbl_settings,
-                        assetPath: "assets/icons/settings_icon.png",
-                        iconBgColor: violetColor[20],
-                      ),
-                      _buildDivider(),
-                      _buildButtonTile(
-                        onTapped: () => Get.toNamed(AppRoutes.exportDataScreen),
-                        titleText: localization.lbl_export_data,
-                        assetPath: "assets/icons/upload_icon.png",
-                        iconBgColor: violetColor[20],
-                      ),
-                      _buildDivider(),
-                      _buildButtonTile(
-                        onTapped: () {
-                          showLogoutBottomSheet(context,
-                              localization: localization, size: size);
-                        },
-                        titleText: localization.lbl_logout,
-                        assetPath: "assets/icons/logout_icon_red.png",
-                        iconBgColor: redThemeColor[20],
-                      ),
-                    ],
-                  ),
+              if (profileScreenController.isLoading)
+                const BlurredBackground(
+                  child: CustomLoadingIndicator(),
                 ),
-              ),
             ],
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
@@ -173,7 +191,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               15.h,
               Text(
                 localization.msg_logout,
-                style: AppStyle.gfPoppinsCustom(
+                style: AppStyle.poppinsCustom(
                   fontSize: 22,
                   color: darkThemeColor[100]!,
                   fontWeight: FontWeight.w500,
@@ -182,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               15.h,
               Text(
                 localization.msg_logout_confirm,
-                style: AppStyle.gfPoppinsCustom(
+                style: AppStyle.poppinsCustom(
                   fontSize: 18,
                   color: darkThemeColor[50]!,
                   fontWeight: FontWeight.w400,
@@ -205,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: Text(
                       localization.lbl_no,
-                      style: AppStyle.gfPoppinsCustom(
+                      style: AppStyle.poppinsCustom(
                           fontSize: 19,
                           color: violetColor,
                           fontWeight: FontWeight.w500),
@@ -213,8 +231,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
+                      Get.back();
+                      profileScreenController.setLoading(true);
                       await SharedPreferencesHandler.clearAllUserData();
-                      Get.back(); // Close the bottom sheet
+                      Future.delayed(
+                        const Duration(seconds: 2),
+                      );
+                      profileScreenController.setLoading(false);
+                      Get.offAllNamed(AppRoutes.onboardingScreen);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: violetColor,
@@ -225,7 +249,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: Text(
                       localization.lbl_yes,
-                      style: AppStyle.gfPoppinsCustom(
+                      style: AppStyle.poppinsCustom(
                           fontSize: 19,
                           color: lightThemeColor,
                           fontWeight: FontWeight.w500),
@@ -279,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             15.w,
             Text(
               titleText,
-              style: AppStyle.gfPoppinsRegularBlack(fontSize: 20),
+              style: AppStyle.poppinsRegularBlack(fontSize: 20),
             ),
           ],
         ),

@@ -32,12 +32,15 @@ class _SettingsNotificationsScreenState
     return SafeArea(
       child: ListView(
         children: [
-          Obx(() => _buildSwitchTile(
+          Obx(
+            () => _buildSwitchTile(
               title: localization.lbl_expense_alert,
               subtitle: localization.msg_expense_alert,
               value: settingsNotificationsController.expenseAlert.value,
               onChanged: (value) =>
-                  settingsNotificationsController.setExpenseAlert(value))),
+                  settingsNotificationsController.setExpenseAlert(value),
+            ),
+          ),
           Obx(() => _buildSwitchTile(
                 title: localization.lbl_budget_alert,
                 subtitle: localization.msg_budget_alert,
@@ -65,7 +68,7 @@ class _SettingsNotificationsScreenState
       ),
       title: Text(
         localization.lbl_notification,
-        style: AppStyle.gfPoppinsRegularBlack(fontSize: 18),
+        style: AppStyle.poppinsRegularBlack(fontSize: 18),
       ),
       centerTitle: true,
       backgroundColor: lightThemeColor,
@@ -80,7 +83,7 @@ class _SettingsNotificationsScreenState
     return SwitchListTile(
       title: Text(
         title,
-        style: AppStyle.gfPoppinsCustom(
+        style: AppStyle.poppinsCustom(
           fontSize: 15,
           color: darkThemeColor[100]!,
           fontWeight: FontWeight.w500,
@@ -88,7 +91,7 @@ class _SettingsNotificationsScreenState
       ),
       subtitle: Text(
         subtitle,
-        style: AppStyle.gfPoppinsCustom(
+        style: AppStyle.poppinsCustom(
           fontSize: 13,
           color: darkThemeColor[25]!,
           fontWeight: FontWeight.w300,

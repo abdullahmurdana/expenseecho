@@ -113,14 +113,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Text(
                 titleText,
-                style: AppStyle.gfPoppinsRegularBlack(fontSize: 16),
+                style: AppStyle.poppinsRegularBlack(fontSize: 16),
               ),
               Row(
                 children: [
                   valueText != null
                       ? Text(
                           valueText,
-                          style: AppStyle.gfPoppinsCustom(
+                          style: AppStyle.poppinsCustom(
                             fontSize: 15,
                             color: darkThemeColor[25]!,
                             fontWeight: FontWeight.w400,
@@ -150,7 +150,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       title: Text(
         localization.lbl_settings,
-        style: AppStyle.gfPoppinsRegularBlack(fontSize: 18),
+        style: AppStyle.poppinsRegularBlack(fontSize: 18),
       ),
       centerTitle: true,
       backgroundColor: lightThemeColor,

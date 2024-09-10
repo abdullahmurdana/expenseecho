@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                     Text(
                       'Spend Frequency',
-                      style: AppStyle.gfPoppinsMediumBlack(fontSize: 18),
+                      style: AppStyle.poppinsMediumBlack(fontSize: 18),
                     ),
                     10.h,
                     SizedBox(
@@ -141,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       for (var expense in homeScreenController.filteredExpenses) {
         combinedData.add({
-          'date': DateTime.parse(expense.createdAt),
+          'date': DateTime.parse(expense.createdAt ?? ''),
           'amount': -expense.expenseAmount, // Expenses reduce the total
         });
       }
@@ -237,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Text(
                           "October",
-                          style: AppStyle.gfPoppinsMediumBlack(fontSize: 18),
+                          style: AppStyle.poppinsMediumBlack(fontSize: 18),
                         ),
                       ],
                     ),
@@ -254,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   5.h,
                   Text(
                     '\$9400',
-                    style: AppStyle.gfPoppinsBoldBlack(fontSize: 28),
+                    style: AppStyle.poppinsBoldBlack(fontSize: 28),
                   ),
                 ],
               ),
@@ -296,13 +296,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Text(
                                 'Income',
-                                style: AppStyle.gfPoppinsRegularWhite(
-                                    fontSize: 12),
+                                style:
+                                    AppStyle.poppinsRegularWhite(fontSize: 12),
                               ),
                               Text(
                                 '\$1200',
                                 style:
-                                    AppStyle.gfPoppinsMediumWhite(fontSize: 18),
+                                    AppStyle.poppinsMediumWhite(fontSize: 18),
                               )
                             ],
                           )
@@ -338,13 +338,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Text(
                                 'Expense',
-                                style: AppStyle.gfPoppinsRegularWhite(
-                                    fontSize: 12),
+                                style:
+                                    AppStyle.poppinsRegularWhite(fontSize: 12),
                               ),
                               Text(
                                 '\$1200',
                                 style:
-                                    AppStyle.gfPoppinsMediumWhite(fontSize: 18),
+                                    AppStyle.poppinsMediumWhite(fontSize: 18),
                               )
                             ],
                           )

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shimmer/shimmer.dart'; // Add this package to your pubspec.yaml
+import 'package:shimmer/shimmer.dart';
 
 class CustomLoadingIndicator extends StatelessWidget {
   const CustomLoadingIndicator({super.key});
@@ -17,8 +17,8 @@ class CustomLoadingIndicator extends StatelessWidget {
         highlightColor: Colors.grey[100]!,
         child: Image.asset(
           "assets/icons/expense_echo_logo.png",
-          width: 200, // Adjust width as needed
-          height: 200, // Adjust height as needed
+          width: 200,
+          height: 200,
           fit: BoxFit.contain,
         ),
       ),

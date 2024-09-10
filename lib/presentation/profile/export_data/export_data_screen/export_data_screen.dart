@@ -71,7 +71,8 @@ class _ExportDataScreenState extends State<ExportDataScreen> {
                   padding: const EdgeInsets.only(bottom: 25),
                   child: Center(
                     child: buildElevatedButton(
-                      size: size,
+                      height: 56,
+                      width: size.width,
                       imagePath: "assets/icons/download_icon.png",
                       onTapped: () =>
                           Get.toNamed(AppRoutes.exportDataSuccessScreen),
@@ -100,7 +101,7 @@ class _ExportDataScreenState extends State<ExportDataScreen> {
       children: [
         Text(
           title,
-          style: AppStyle.gfPoppinsMediumBlack(fontSize: 14),
+          style: AppStyle.poppinsMediumBlack(fontSize: 14),
         ),
         10.h,
         Obx(() {
@@ -121,7 +122,7 @@ class _ExportDataScreenState extends State<ExportDataScreen> {
                     value: item,
                     child: Text(
                       item,
-                      style: AppStyle.gfPoppinsRegularBlack(fontSize: 14),
+                      style: AppStyle.poppinsRegularBlack(fontSize: 14),
                     ),
                   );
                 }).toList(),
