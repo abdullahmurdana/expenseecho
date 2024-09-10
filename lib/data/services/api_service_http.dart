@@ -241,4 +241,22 @@ class ApiServiceHttp {
       return false;
     }
   }
+
+  static Future<bool> addIncome({required IncomeModel income}) async {
+    final uri = Uri.parse('$url/api/collections/incomes/records');
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: income.toJson(),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      print('Failed to add income: ${response.statusCode}');
+      return false;
+    }
+  }
 }

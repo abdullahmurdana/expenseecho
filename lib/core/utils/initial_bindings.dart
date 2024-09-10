@@ -2,6 +2,7 @@ import 'package:expenseecho/core/app_exports.dart';
 import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new_controller.dart';
 import 'package:expenseecho/presentation/home/home_screen/home_screen_controller.dart';
 import 'package:expenseecho/presentation/home/main_screen/main_screen_controller.dart';
+import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_controller.dart';
 import 'package:expenseecho/presentation/onboarding/add_new_account/add_new_account_controller.dart';
 import 'package:expenseecho/presentation/onboarding/forgot_screen/forgot_screen_controller.dart';
 import 'package:expenseecho/presentation/onboarding/launch_screen/launch_screen_controller.dart';
@@ -54,5 +55,6 @@ class InitialBindings extends Bindings {
     Get.lazyPut(() => MainScreenController(), fenix: true);
     Get.lazyPut(() => TransferAddNewController(), fenix: true);
     Get.lazyPut(() => ExpenseAddNewController(), fenix: true);
+    Get.lazyPut(() => IncomeAddNewController(), fenix: true);
   }
 }

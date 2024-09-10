@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:get/get.dart';
+
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
@@ -8,11 +10,9 @@ import 'package:expenseecho/core/utils/validation_methods.dart';
 import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 import 'package:expenseecho/presentation/onboarding/login_screen/login_screen_controller.dart';
 import 'package:expenseecho/routes/app_routes.dart';
-import 'package:expenseecho/widgets/custom_password_field.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:expenseecho/widgets/custom_loading_indicator.dart';
 import 'package:expenseecho/widgets/blurred_background_widget.dart';
-import 'package:flutter/services.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
+import 'package:expenseecho/widgets/custom_password_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

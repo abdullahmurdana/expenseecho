@@ -1,6 +1,7 @@
 import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new_screen.dart';
 import 'package:expenseecho/presentation/home/home_screen/home_screen.dart';
 import 'package:expenseecho/presentation/home/main_screen/main_screen.dart';
+import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_screen.dart';
 import 'package:expenseecho/presentation/onboarding/add_new_account/add_new_account_screen.dart';
 import 'package:expenseecho/presentation/onboarding/forgot_screen/forgot_screen.dart';
 import 'package:expenseecho/presentation/onboarding/launch_screen/launch_screen.dart';
@@ -53,6 +54,7 @@ class AppRoutes {
   static const String mainScreen = '/main_screen';
   static const String transferAddNewScreen = '/transfer_add_new_screen';
   static const String expenseAddNewScreen = '/expense_add_new_screen';
+  static const String incomeAddNewScreen = '/income_add_new_screen';
 
   static List<GetPage> getPages = [
     GetPage(
@@ -162,6 +164,10 @@ class AppRoutes {
     GetPage(
       name: expenseAddNewScreen,
       page: () => const ExpenseAddNewScreen(),
+    ),
+    GetPage(
+      name: incomeAddNewScreen,
+      page: () => const IncomeAddNewScreen(),
     ),
   ];
 }

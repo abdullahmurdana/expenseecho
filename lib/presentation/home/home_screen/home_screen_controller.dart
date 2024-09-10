@@ -38,7 +38,7 @@ class HomeScreenController extends GetxController {
         expenseResult =
             expenses.where((e) => e.createdAt!.startsWith(todayDate)).toList();
         incomeResult =
-            incomes.where((i) => i.createdAt.startsWith(todayDate)).toList();
+            incomes.where((i) => i.created!.startsWith(todayDate)).toList();
         break;
       case 'Week':
         DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
@@ -47,7 +47,7 @@ class HomeScreenController extends GetxController {
                 (e) => DateTime.parse(e.createdAt ?? '').isAfter(startOfWeek))
             .toList();
         incomeResult = incomes
-            .where((i) => DateTime.parse(i.createdAt).isAfter(startOfWeek))
+            .where((i) => DateTime.parse(i.created!).isAfter(startOfWeek))
             .toList();
         break;
       case 'Month':
@@ -57,7 +57,7 @@ class HomeScreenController extends GetxController {
                 (e) => DateTime.parse(e.createdAt ?? '').isAfter(startOfMonth))
             .toList();
         incomeResult = incomes
-            .where((i) => DateTime.parse(i.createdAt).isAfter(startOfMonth))
+            .where((i) => DateTime.parse(i.created!).isAfter(startOfMonth))
             .toList();
         break;
       case 'Year':
@@ -67,7 +67,7 @@ class HomeScreenController extends GetxController {
                 (e) => DateTime.parse(e.createdAt ?? '').isAfter(startOfYear))
             .toList();
         incomeResult = incomes
-            .where((i) => DateTime.parse(i.createdAt).isAfter(startOfYear))
+            .where((i) => DateTime.parse(i.created!).isAfter(startOfYear))
             .toList();
         break;
     }

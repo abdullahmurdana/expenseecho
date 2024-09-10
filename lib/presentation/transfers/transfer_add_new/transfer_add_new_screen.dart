@@ -1,3 +1,7 @@
+import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_controller.dart';
+import 'package:expenseecho/routes/app_routes.dart';
+import 'package:expenseecho/widgets/blurred_background_widget.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -282,29 +286,24 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                         () {
                           final controller =
                               Get.find<TransferAddNewController>();
-                          return controller.loading.value
-                              ? const CircularProgressIndicator()
-                              : buildElevatedButton(
-                                  height: 56,
-                                  width: size.width,
-                                  onTapped: () async {
-                                    final attachment =
-                                        controller.attachment.value;
-                                    if (attachment != null) {
-                                      // await controller.uploadFileToS3(attachment);
-                                    }
-                                    await controller
-                                        .createTransfer()
-                                        .then((value) {
-                                      if (value) {
-                                        Get.back();
-                                      }
-                                    });
-                                  },
-                                  title: localization.lbl_continue,
-                                  bgColor: blueThemeColor,
-                                  fgColor: lightThemeColor,
-                                );
+                          return buildElevatedButton(
+                            height: 56,
+                            width: size.width,
+                            onTapped: () async {
+                              // final attachment = controller.attachment.value;
+                              // if (attachment != null) {
+                              //   // await controller.uploadFileToS3(attachment);
+                              // }
+                              await controller.createTransfer().then((value) {
+                                if (value) {
+                                  Get.offAllNamed(AppRoutes.mainScreen);
+                                }
+                              });
+                            },
+                            title: localization.lbl_continue,
+                            bgColor: blueThemeColor,
+                            fgColor: lightThemeColor,
+                          );
                         },
                       ),
                     ),
@@ -356,6 +355,16 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
               ),
             ),
           ),
+          Obx(() {
+            final controller = Get.find<IncomeAddNewController>();
+            return controller.loading.value
+                ? const Positioned.fill(
+                    child: BlurredBackground(
+                      child: CustomLoadingIndicator(),
+                    ),
+                  )
+                : const SizedBox.shrink();
+          }),
         ],
       ),
     );

@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       for (var income in homeScreenController.filteredIncomes) {
         combinedData.add({
-          'date': DateTime.parse(income.createdAt),
+          'date': DateTime.parse(income.created ?? ''),
           'amount': income.incomeAmount, // Incomes increase the total
         });
       }
