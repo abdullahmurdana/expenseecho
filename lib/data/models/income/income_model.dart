@@ -8,6 +8,7 @@ class IncomeModel {
   String userId;
   String accountId;
   String category;
+  String title;
   String description;
   double incomeAmount;
   String? attachmentLink;
@@ -22,6 +23,7 @@ class IncomeModel {
     required this.userId,
     required this.accountId,
     required this.category,
+    required this.title,
     required this.description,
     required this.incomeAmount,
     this.attachmentLink,
@@ -38,6 +40,7 @@ class IncomeModel {
     String? userId,
     String? accountId,
     String? category,
+    String? title,
     String? description,
     double? incomeAmount,
     String? attachmentLink,
@@ -53,6 +56,7 @@ class IncomeModel {
       userId: userId ?? this.userId,
       accountId: accountId ?? this.accountId,
       category: category ?? this.category,
+      title: title ?? this.title,
       description: description ?? this.description,
       incomeAmount: incomeAmount ?? this.incomeAmount,
       attachmentLink: attachmentLink ?? this.attachmentLink,
@@ -71,6 +75,7 @@ class IncomeModel {
       'userId': userId,
       'accountId': accountId,
       'category': category,
+      'title': title,
       'description': description,
       'incomeAmount': incomeAmount,
       'attachmentLink': attachmentLink,
@@ -89,6 +94,7 @@ class IncomeModel {
       userId: map['userId'] as String,
       accountId: map['accountId'] as String,
       category: map['category'] as String,
+      title: map['title'] as String,
       description: map['description'] as String,
       incomeAmount: map['incomeAmount'] as double,
       attachmentLink: map['attachmentLink'] != null
@@ -109,7 +115,7 @@ class IncomeModel {
 
   @override
   String toString() {
-    return 'IncomeModel(id: $id, created: $created, updated: $updated, userId: $userId, accountId: $accountId, category: $category, description: $description, incomeAmount: $incomeAmount, attachmentLink: $attachmentLink, repeated: $repeated, frequency: $frequency, startDate: $startDate, endAfterDate: $endAfterDate)';
+    return 'IncomeModel(id: $id, created: $created, updated: $updated, userId: $userId, accountId: $accountId, category: $category, Title: $title, description: $description, incomeAmount: $incomeAmount, attachmentLink: $attachmentLink, repeated: $repeated, frequency: $frequency, startDate: $startDate, endAfterDate: $endAfterDate)';
   }
 
   @override
@@ -122,6 +128,7 @@ class IncomeModel {
         other.userId == userId &&
         other.accountId == accountId &&
         other.category == category &&
+        other.title == title &&
         other.description == description &&
         other.incomeAmount == incomeAmount &&
         other.attachmentLink == attachmentLink &&
@@ -139,6 +146,7 @@ class IncomeModel {
         userId.hashCode ^
         accountId.hashCode ^
         category.hashCode ^
+        title.hashCode ^
         description.hashCode ^
         incomeAmount.hashCode ^
         attachmentLink.hashCode ^

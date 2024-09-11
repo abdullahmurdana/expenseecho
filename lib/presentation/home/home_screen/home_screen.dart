@@ -1,5 +1,6 @@
 import 'package:expenseecho/data/models/expense/expense_model.dart';
 import 'package:expenseecho/data/models/income/income_model.dart';
+import 'package:expenseecho/routes/app_routes.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -241,8 +242,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    Image.asset(
-                      "assets/icons/notification_icon.png",
+                    GestureDetector(
+                      onTap: () => Get.toNamed(AppRoutes.transferDetailsScreen),
+                      child: Image.asset(
+                        "assets/icons/notification_icon.png",
+                      ),
                     ),
                   ],
                 ),

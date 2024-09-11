@@ -1,18 +1,19 @@
-import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_controller.dart';
-import 'package:expenseecho/routes/app_routes.dart';
-import 'package:expenseecho/widgets/blurred_background_widget.dart';
-import 'package:expenseecho/widgets/custom_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:get/get.dart';
+
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
 import 'package:expenseecho/data/models/accounts/accounts_model.dart';
+import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_controller.dart';
 import 'package:expenseecho/presentation/transfers/transfer_add_new/transfer_add_new_controller.dart';
+import 'package:expenseecho/widgets/blurred_background_widget.dart';
 import 'package:expenseecho/widgets/currency_input_formatter.dart';
 import 'package:expenseecho/widgets/custom_dashed_border.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
+import 'package:expenseecho/widgets/custom_success_dialog.dart';
 import 'package:expenseecho/widgets/custom_widgets.dart';
 
 class TransferAddnewScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class TransferAddnewScreen extends StatefulWidget {
 }
 
 class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
-  final addNewTransferScreenController = Get.find<TransferAddNewController>();
+  final transferAddNewController = Get.find<TransferAddNewController>();
 
   @override
   void initState() {
@@ -68,10 +69,12 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Obx(() {
-              final attachment =
-                  addNewTransferScreenController.attachment.value;
-              final bottomSheetHeight =
-                  attachment != null ? size.height * 0.47 : size.height * 0.41;
+              final attachment = transferAddNewController.attachment.value;
+              double bottomSheetHeight = size.height * 0.41;
+
+              if (attachment != null) {
+                bottomSheetHeight += size.height * 0.06;
+              }
               return Container(
                 height: bottomSheetHeight, // Adjust height based on attachment
                 decoration: const BoxDecoration(
@@ -117,11 +120,10 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                                         //     : '',
                                       ),
                                       icon: const SizedBox.shrink(),
-                                      items: addNewTransferScreenController
-                                          .accounts
+                                      items: transferAddNewController.accounts
                                           .where((account) =>
                                               account !=
-                                              addNewTransferScreenController
+                                              transferAddNewController
                                                   .selectedToAccount.value)
                                           .map((account) {
                                         return DropdownMenuItem<AccountsModel>(
@@ -130,11 +132,11 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                                         );
                                       }).toList(),
                                       onChanged: (account) {
-                                        addNewTransferScreenController
+                                        transferAddNewController
                                             .selectedFromAccount
                                             .value = account;
                                       },
-                                      value: addNewTransferScreenController
+                                      value: transferAddNewController
                                           .selectedFromAccount.value,
                                     ),
                                   )),
@@ -163,11 +165,10 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                                         //     : '',
                                       ),
                                       icon: const SizedBox.shrink(),
-                                      items: addNewTransferScreenController
-                                          .accounts
+                                      items: transferAddNewController.accounts
                                           .where((account) =>
                                               account !=
-                                              addNewTransferScreenController
+                                              transferAddNewController
                                                   .selectedFromAccount.value)
                                           .map((account) {
                                         return DropdownMenuItem<AccountsModel>(
@@ -176,10 +177,10 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                                         );
                                       }).toList(),
                                       onChanged: (account) {
-                                        addNewTransferScreenController
+                                        transferAddNewController
                                             .selectedToAccount.value = account;
                                       },
-                                      value: addNewTransferScreenController
+                                      value: transferAddNewController
                                           .selectedToAccount.value,
                                     ),
                                   )),
@@ -188,8 +189,7 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: GestureDetector(
-                              onTap: addNewTransferScreenController
-                                  .validateAndSwitch,
+                              onTap: transferAddNewController.validateAndSwitch,
                               child: Container(
                                 width: 40,
                                 height: 40,
@@ -211,7 +211,7 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                     gap.h,
                     // Description TextField
                     Obx(() => buildTextField(
-                          controller: addNewTransferScreenController
+                          controller: transferAddNewController
                               .descriptionController.value,
                           hintText: localization.lbl_enter_description,
                           labelText: localization.lbl_description,
@@ -262,7 +262,7 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                     ),
                     Obx(() {
                       final attachment =
-                          addNewTransferScreenController.attachment.value;
+                          transferAddNewController.attachment.value;
                       if (attachment != null) {
                         return SizedBox(
                           width: 120,
@@ -296,7 +296,9 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                               // }
                               await controller.createTransfer().then((value) {
                                 if (value) {
-                                  Get.offAllNamed(AppRoutes.mainScreen);
+                                  showSuccessDialog(
+                                      message: localization
+                                          .msg_success_add_transaction);
                                 }
                               });
                             },
@@ -313,48 +315,55 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
             }),
           ),
           // Amount Entry Section Above Bottom Sheet
-          Positioned(
-            bottom: addNewTransferScreenController.attachment.value != null
-                ? size.height * 0.47
-                : size.height * 0.41,
-            left: 0,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: horizontalPadding),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    localization.lbl_how_much,
-                    style: AppStyle.poppinsCustom(
-                      fontSize: 20,
-                      color: lightThemeColor[80]!,
-                      fontWeight: FontWeight.w500,
+          Obx(() {
+            final attachment = transferAddNewController.attachment.value;
+            double bottomSheetHeight = size.height * 0.41;
+
+            if (attachment != null) {
+              bottomSheetHeight += size.height * 0.06;
+            }
+            return Positioned(
+              bottom: bottomSheetHeight,
+              left: 0,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      localization.lbl_how_much,
+                      style: AppStyle.poppinsCustom(
+                        fontSize: 20,
+                        color: lightThemeColor[80]!,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  Obx(() => SizedBox(
-                        width: 200,
-                        child: TextField(
-                          controller: addNewTransferScreenController
-                              .amountController.value,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: '\$0',
-                            hintStyle: AppStyle.poppinsBoldWhite(fontSize: 50),
+                    Obx(() => SizedBox(
+                          width: 200,
+                          child: TextField(
+                            controller:
+                                transferAddNewController.amountController.value,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: '\$0',
+                              hintStyle:
+                                  AppStyle.poppinsBoldWhite(fontSize: 50),
+                            ),
+                            style: AppStyle.poppinsBoldWhite(fontSize: 50),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              CurrencyInputFormatter(),
+                            ],
                           ),
-                          style: AppStyle.poppinsBoldWhite(fontSize: 50),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            CurrencyInputFormatter(),
-                          ],
-                        ),
-                      )),
-                ],
+                        )),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          }),
           Obx(() {
             final controller = Get.find<IncomeAddNewController>();
             return controller.loading.value

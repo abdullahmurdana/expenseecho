@@ -70,7 +70,10 @@ class _MainScreenState extends State<MainScreen> {
         ActionButton(
           color: greenThemeColor,
           icon: Image.asset("assets/icons/income_icon_light.png"),
-          onPressed: () {},
+          onPressed: () {
+            // TODO Navigate to Add Transfer screen
+            Get.toNamed(AppRoutes.incomeAddNewScreen);
+          },
           heroTag: 'income',
         ),
         ActionButton(

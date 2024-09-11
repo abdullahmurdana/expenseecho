@@ -6,6 +6,7 @@ class ExpenseModel {
   String userId;
   String accountId;
   String category;
+  String title;
   String description;
   double expenseAmount;
   String? attachmentLink;
@@ -20,6 +21,7 @@ class ExpenseModel {
     required this.userId,
     required this.accountId,
     required this.category,
+    required this.title,
     required this.description,
     required this.expenseAmount,
     this.attachmentLink,
@@ -36,6 +38,7 @@ class ExpenseModel {
     String? userId,
     String? accountId,
     String? category,
+    String? title,
     String? description,
     double? expenseAmount,
     String? attachmentLink,
@@ -51,6 +54,7 @@ class ExpenseModel {
       userId: userId ?? this.userId,
       accountId: accountId ?? this.accountId,
       category: category ?? this.category,
+      title: title ?? this.title,
       description: description ?? this.description,
       expenseAmount: expenseAmount ?? this.expenseAmount,
       attachmentLink: attachmentLink ?? this.attachmentLink,
@@ -69,6 +73,7 @@ class ExpenseModel {
       'user_id': userId,
       'account_id': accountId,
       'category': category,
+      'title': title,
       'description': description,
       'expense_amount': expenseAmount,
       'attachment_link': attachmentLink,
@@ -87,6 +92,7 @@ class ExpenseModel {
       userId: map['user_id'] as String,
       accountId: map['account_id'] as String,
       category: map['category'] as String,
+      title: map['title'] as String,
       description: map['description'] as String,
       expenseAmount: map['expense_amount'] as double,
       attachmentLink: map['attachment_link'] != null
@@ -109,7 +115,7 @@ class ExpenseModel {
 
   @override
   String toString() {
-    return 'ExpenseModel(id: $id, userId: $userId, accountId: $accountId, category: $category, description: $description, expenseAmount: $expenseAmount, attachmentLink: $attachmentLink, repeated: $repeated, frequency: $frequency, endAfterDate: $endAfterDate, startDate: $startDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ExpenseModel(id: $id, userId: $userId, accountId: $accountId, category: $category, title: $title, description: $description, expenseAmount: $expenseAmount, attachmentLink: $attachmentLink, repeated: $repeated, frequency: $frequency, endAfterDate: $endAfterDate, startDate: $startDate, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -120,6 +126,7 @@ class ExpenseModel {
         other.userId == userId &&
         other.accountId == accountId &&
         other.category == category &&
+        other.title == title &&
         other.description == description &&
         other.expenseAmount == expenseAmount &&
         other.attachmentLink == attachmentLink &&
@@ -137,6 +144,7 @@ class ExpenseModel {
         userId.hashCode ^
         accountId.hashCode ^
         category.hashCode ^
+        title.hashCode ^
         description.hashCode ^
         expenseAmount.hashCode ^
         attachmentLink.hashCode ^

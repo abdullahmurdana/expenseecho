@@ -19,6 +19,7 @@ class ExpenseAddNewController extends GetxController
   var selectedCategory = Rxn<CategoryModel>();
   var amountController = TextEditingController().obs;
   var descriptionController = TextEditingController().obs;
+  var titleController = TextEditingController().obs;
   var attachment = Rx<File?>(null);
   var loading = false.obs;
 
@@ -208,6 +209,7 @@ class ExpenseAddNewController extends GetxController
         accountId: selectedAccount.value!.id,
         category: selectedCategory.value?.name ?? 'Uncategorized',
         description: descriptionController.value.text,
+        title: titleController.value.text,
         expenseAmount: amount,
         repeated: isRepeat,
         frequency: isRepeat ? selectedFrequency.value : null,

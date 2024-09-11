@@ -1,10 +1,10 @@
 import 'package:expenseecho/data/models/accounts/accounts_model.dart';
 import 'package:expenseecho/data/models/category_model.dart';
-import 'package:expenseecho/routes/app_routes.dart';
 import 'package:expenseecho/widgets/blurred_background_widget.dart';
 import 'package:expenseecho/widgets/currency_input_formatter.dart';
 import 'package:expenseecho/widgets/custom_dashed_border.dart';
 import 'package:expenseecho/widgets/custom_loading_indicator.dart';
+import 'package:expenseecho/widgets/custom_success_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -68,7 +68,7 @@ class _IncomeAddNewScreenState extends State<IncomeAddNewScreen> {
             child: Obx(() {
               final attachment = incomeAddNewController.attachment.value;
               final isRepeat = incomeAddNewController.isRepeat;
-              double bottomSheetHeight = size.height * 0.53;
+              double bottomSheetHeight = size.height * 0.61;
 
               if (attachment != null) {
                 bottomSheetHeight += size.height * 0.06;
@@ -124,6 +124,15 @@ class _IncomeAddNewScreenState extends State<IncomeAddNewScreen> {
                       ),
                     ),
                     gap.h,
+                    Obx(() => buildTextField(
+                            controller:
+                                incomeAddNewController.titleController.value,
+                            hintText: localization.lbl_enter_title,
+                            labelText: localization.lbl_title,
+                            height: 56,
+                            width: availableWidth,
+                          )),
+                      gap.h,
                     Obx(() => buildTextField(
                           controller: incomeAddNewController
                               .descriptionController.value,
@@ -336,7 +345,9 @@ class _IncomeAddNewScreenState extends State<IncomeAddNewScreen> {
                             // }
                             await controller.createIncome().then((value) {
                               if (value) {
-                                Get.offAllNamed(AppRoutes.mainScreen);
+                                showSuccessDialog(
+                                    message: localization
+                                        .msg_success_add_transaction);
                               }
                             });
                           },
@@ -355,7 +366,7 @@ class _IncomeAddNewScreenState extends State<IncomeAddNewScreen> {
           Obx(() {
             final attachment = incomeAddNewController.attachment.value;
             final isRepeat = incomeAddNewController.isRepeat;
-            double bottomSheetHeight = size.height * 0.53;
+            double bottomSheetHeight = size.height * 0.61;
 
             if (attachment != null) {
               bottomSheetHeight += size.height * 0.06;

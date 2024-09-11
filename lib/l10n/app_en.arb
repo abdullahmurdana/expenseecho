@@ -85,9 +85,12 @@
     "lbl_how_much": "How Much?",
     "lbl_from": "From",
     "lbl_to": "To",
+    "lbl_attachment": "Attachment",
     "lbl_add_attachment": "Add Attachment",
     "lbl_description": "Description",
     "lbl_enter_description": "Enter Description",
+    "lbl_title": "Title",
+    "lbl_enter_title": "Enter Title",
     "lbl_camera": "Camera",
     "lbl_image": "Image",
     "lbl_document": "Document",
@@ -136,5 +139,10 @@
     "lbl_short_month_sep": "SEP",
     "lbl_short_month_oct": "OCT",
     "lbl_short_month_nov": "NOV",
-    "lbl_short_month_dec": "DEC"
+    "lbl_short_month_dec": "DEC",
+    "msg_success_add_transaction": "Transaction has been successfully added.",
+    "msg_success_remove_transaction": "Transaction has been successfully added.",
+    "lbl_transaction_detail": "Transaction Details",
+    "lbl_remove_transaction": "Remove this transaction?",
+    "msg_remove_transaction": "Are you sure do you wanna remove this transaction?"
 }

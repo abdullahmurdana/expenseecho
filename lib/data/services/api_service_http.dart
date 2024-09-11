@@ -8,7 +8,7 @@ import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 import 'package:http/http.dart' as http;
 
 class ApiServiceHttp {
-  static const String url = 'https://d720-103-72-2-64.ngrok-free.app';
+  static const String url = 'https://288d-103-72-2-115.ngrok-free.app';
 
   static Future<Map<String, dynamic>> signInHttp({
     required String identity,

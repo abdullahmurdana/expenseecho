@@ -1,7 +1,9 @@
 import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new_screen.dart';
+import 'package:expenseecho/presentation/expenses/expense_details/expense_details_screen.dart';
 import 'package:expenseecho/presentation/home/home_screen/home_screen.dart';
 import 'package:expenseecho/presentation/home/main_screen/main_screen.dart';
 import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_screen.dart';
+import 'package:expenseecho/presentation/incomes/income_details/income_details_screen.dart';
 import 'package:expenseecho/presentation/onboarding/add_new_account/add_new_account_screen.dart';
 import 'package:expenseecho/presentation/onboarding/forgot_screen/forgot_screen.dart';
 import 'package:expenseecho/presentation/onboarding/launch_screen/launch_screen.dart';
@@ -24,6 +26,7 @@ import 'package:expenseecho/presentation/profile/settings/settings_screen/settin
 import 'package:expenseecho/presentation/profile/settings/settings_security_screen/settings_security_screen.dart';
 import 'package:expenseecho/presentation/profile/settings/settings_theme_screen/settings_theme_screen.dart';
 import 'package:expenseecho/presentation/transfers/transfer_add_new/transfer_add_new_screen.dart';
+import 'package:expenseecho/presentation/transfers/transfer_details/transfer_details_screen.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -53,8 +56,11 @@ class AppRoutes {
   static const String homeScreen = '/home_screen';
   static const String mainScreen = '/main_screen';
   static const String transferAddNewScreen = '/transfer_add_new_screen';
+  static const String transferDetailsScreen = '/transfer_details_screen';
   static const String expenseAddNewScreen = '/expense_add_new_screen';
+  static const String expenseDetailsScreen = '/expense_details_screen';
   static const String incomeAddNewScreen = '/income_add_new_screen';
+  static const String incomeDetailsScreen = '/income_details_screen';
 
   static List<GetPage> getPages = [
     GetPage(
@@ -162,12 +168,24 @@ class AppRoutes {
       page: () => const TransferAddnewScreen(),
     ),
     GetPage(
+      name: transferDetailsScreen,
+      page: () => const TransferDetailsScreen(),
+    ),
+    GetPage(
       name: expenseAddNewScreen,
       page: () => const ExpenseAddNewScreen(),
     ),
     GetPage(
+      name: expenseDetailsScreen,
+      page: () => const ExpenseDetailsScreen(),
+    ),
+    GetPage(
       name: incomeAddNewScreen,
       page: () => const IncomeAddNewScreen(),
+    ),
+    GetPage(
+      name: incomeDetailsScreen,
+      page: () => const IncomeDetailsScreen(),
     ),
   ];
 }

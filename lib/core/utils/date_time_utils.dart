@@ -2,6 +2,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 const String dateTimeFormatPattern = 'dd/MM/yyyy';
+const String displayDateTimeFormatPattern = 'EEEE d MMM, yy  HH:mm';
 
 extension DateTimeExtension on DateTime {
   String format({
