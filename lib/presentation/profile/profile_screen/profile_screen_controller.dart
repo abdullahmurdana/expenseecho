@@ -1,6 +1,6 @@
 import 'package:expenseecho/data/models/user_model/user_model.dart';
+import 'package:expenseecho/data/services/shared_preferences/shared_preferences_handler.dart';
 import 'package:get/get.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 
 class ProfileScreenController extends GetxController {
   var user = Rxn<UserModel>();
@@ -18,7 +18,7 @@ class ProfileScreenController extends GetxController {
   }
 
   Future<void> loadUserData() async {
-    final userData = await SharedPreferencesHandler.getUserData();
+    final userData = await UserPreferences.getUserData();
     if (userData != null) {
       user.value = userData;
     } else {

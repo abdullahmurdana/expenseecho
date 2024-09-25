@@ -1,16 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:get/get.dart';
-
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
+import 'package:expenseecho/data/services/shared_preferences/shared_preferences_handler.dart';
 import 'package:expenseecho/presentation/profile/profile_screen/profile_screen_controller.dart';
 import 'package:expenseecho/routes/app_routes.dart';
-import 'package:expenseecho/widgets/custom_loading_indicator.dart';
 import 'package:expenseecho/widgets/blurred_background_widget.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:get/get.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -50,11 +49,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 backgroundColor: greenThemeColor,
                                 child: ClipOval(
                                   child: CachedNetworkImage(
-                                    imageUrl: profileScreenController.user.value
-                                                ?.avatarLink.isNotEmpty ==
-                                            true
+                                    imageUrl: profileScreenController
+                                                .user.value?.avatarLink !=
+                                            null
                                         ? profileScreenController
-                                            .user.value!.avatarLink
+                                                .user.value!.avatarLink ??
+                                            ''
                                         : "https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671122.jpg", // Provide a default valid URL
                                     placeholder: (context, url) =>
                                         const CircularProgressIndicator(),
@@ -80,8 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         fontWeight: FontWeight.w400),
                                   ),
                                   Text(
-                                    profileScreenController
-                                            .user.value?.username ??
+                                    profileScreenController.user.value?.name ??
                                         'Default',
                                     style: AppStyle.poppinsMediumBlack(
                                         fontSize: 20),
@@ -233,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: () async {
                       Get.back();
                       profileScreenController.setLoading(true);
-                      await SharedPreferencesHandler.clearAllUserData();
+                      await UserPreferences.clearAllUserData();
                       Future.delayed(
                         const Duration(seconds: 2),
                       );

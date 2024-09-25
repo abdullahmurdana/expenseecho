@@ -1,14 +1,16 @@
-import 'package:expenseecho/data/models/expense/expense_model.dart';
-import 'package:expenseecho/data/models/income/income_model.dart';
-import 'package:expenseecho/routes/app_routes.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
 import 'package:expenseecho/presentation/home/home_screen/home_screen_controller.dart';
+import 'package:expenseecho/presentation/profile/accounts/account_screen/account_screen_controller.dart';
+import 'package:expenseecho/routes/app_routes.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
+import 'package:expenseecho/presentation/transactions/transactions_screen/custom_transaction_tile.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,9 +21,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final homeScreenController = Get.find<HomeScreenController>();
-
-  var dummyExpenses = <ExpenseModel>[];
-  var dummyIncomes = <IncomeModel>[];
 
   @override
   void initState() {
@@ -34,8 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final homeScreenController = Get.put(HomeScreenController(), permanent: true);
     final size = MediaQuery.of(context).size;
+    final localization = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: _buildAppBar(),
       backgroundColor: lightThemeColor,
@@ -63,10 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               15.h,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: _buildTimeFrameChips(),
-              ),
+              _buildTimeFrameChips(localization: localization),
+              15.h,
+              _buildTransactionWidget(size: size, localization: localization),
             ],
           ),
         ),
@@ -74,55 +72,199 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTimeFrameChips() {
+  _buildTransactionWidget(
+      {required Size size, required AppLocalizations localization}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                localization.msg_recent_transaction,
+                style: AppStyle.poppinsBoldBlack(fontSize: 18),
+              ),
+              Container(
+                height: 32,
+                width: 78,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: violetColor[20],
+                ),
+                child: Center(
+                  child: Text(
+                    localization.lbl_see_all,
+                    style: AppStyle.poppinsCustom(
+                      fontSize: 13,
+                      color: violetColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          15.h,
+          Obx(() {
+            if (homeScreenController.isLoading.value) {
+              return const Center(
+                child: CustomLoadingIndicator(),
+              );
+            }
+
+            if (homeScreenController.allTransactions.isEmpty) {
+              return const Center(
+                child: Text('No transactions yet'),
+              );
+            }
+
+            // Get the transactions and sort them by date
+            var transactions = homeScreenController.allTransactions.toList();
+            transactions.sort((a, b) => b.createdAt
+                .compareTo(a.createdAt)); // Assuming 'date' is a DateTime field
+
+            // Take the most recent 3 transactions
+            var recentTransactions = transactions.take(3).toList();
+
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: recentTransactions.length,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                var transaction = recentTransactions[index];
+                return TransactionTile(
+                  transaction: transaction,
+                );
+              },
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimeFrameChips({required AppLocalizations localization}) {
     return Obx(() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ChoiceChip(
-            label: const Text('Today'),
+            showCheckmark: false,
+            label: Text(
+              localization.msg_today,
+              style: AppStyle.poppinsCustom(
+                fontSize: 14,
+                color: homeScreenController.selectedTimeFrame.value == 'Today'
+                    ? yellowThemeColor
+                    : lightThemeColor[20]!,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            backgroundColor:
+                homeScreenController.selectedTimeFrame.value == 'Today'
+                    ? yellowThemeColor[20]
+                    : lightThemeColor,
+            selectedColor: yellowThemeColor[20],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide.none,
+            ),
+            side: BorderSide.none,
             selected: homeScreenController.selectedTimeFrame.value == 'Today',
             onSelected: (selected) {
               if (selected) {
-                homeScreenController.selectedTimeFrame.value = 'Today';
-                homeScreenController.filterData(
-                    'Today', dummyExpenses, dummyIncomes);
+                homeScreenController.filterData('Today');
               }
             },
           ),
           const SizedBox(width: 8),
           ChoiceChip(
-            label: const Text('Week'),
+            showCheckmark: false,
+            label: Text(
+              localization.lbl_week,
+              style: AppStyle.poppinsCustom(
+                fontSize: 14,
+                color: homeScreenController.selectedTimeFrame.value == 'Week'
+                    ? yellowThemeColor
+                    : lightThemeColor[20]!,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            backgroundColor:
+                homeScreenController.selectedTimeFrame.value == 'Week'
+                    ? yellowThemeColor[20]
+                    : lightThemeColor,
+            selectedColor: yellowThemeColor[20],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide.none,
+            ),
+            side: BorderSide.none,
             selected: homeScreenController.selectedTimeFrame.value == 'Week',
             onSelected: (selected) {
               if (selected) {
-                homeScreenController.selectedTimeFrame.value = 'Week';
-                homeScreenController.filterData(
-                    'Week', dummyExpenses, dummyIncomes);
+                homeScreenController.filterData('Week');
               }
             },
           ),
           const SizedBox(width: 8),
           ChoiceChip(
-            label: const Text('Month'),
+            showCheckmark: false,
+            label: Text(
+              localization.lbl_month,
+              style: AppStyle.poppinsCustom(
+                fontSize: 14,
+                color: homeScreenController.selectedTimeFrame.value == 'Month'
+                    ? yellowThemeColor
+                    : lightThemeColor[20]!,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            backgroundColor:
+                homeScreenController.selectedTimeFrame.value == 'Month'
+                    ? yellowThemeColor[20]
+                    : lightThemeColor,
+            selectedColor: yellowThemeColor[20],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide.none,
+            ),
+            side: BorderSide.none,
             selected: homeScreenController.selectedTimeFrame.value == 'Month',
             onSelected: (selected) {
               if (selected) {
-                homeScreenController.selectedTimeFrame.value = 'Month';
-                homeScreenController.filterData(
-                    'Month', dummyExpenses, dummyIncomes);
+                homeScreenController.filterData('Month');
               }
             },
           ),
           const SizedBox(width: 8),
           ChoiceChip(
-            label: const Text('Year'),
+            showCheckmark: false,
+            label: Text(
+              localization.lbl_year,
+              style: AppStyle.poppinsCustom(
+                fontSize: 14,
+                color: homeScreenController.selectedTimeFrame.value == 'Year'
+                    ? yellowThemeColor
+                    : lightThemeColor[20]!,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            backgroundColor:
+                homeScreenController.selectedTimeFrame.value == 'Year'
+                    ? yellowThemeColor[20]
+                    : lightThemeColor,
+            selectedColor: yellowThemeColor[20],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide.none,
+            ),
+            side: BorderSide.none,
             selected: homeScreenController.selectedTimeFrame.value == 'Year',
             onSelected: (selected) {
               if (selected) {
-                homeScreenController.selectedTimeFrame.value = 'Year';
-                homeScreenController.filterData(
-                    'Year', dummyExpenses, dummyIncomes);
+                homeScreenController.filterData('Year');
               }
             },
           ),
@@ -133,68 +275,60 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildSpendFrequencyGraph() {
     return Obx(() {
-      // Combine and sum the expenses and incomes data to create the graph points
-      List<FlSpot> spots = [];
-      double cumulativeSum = 0;
-
-      // Create a list to hold both expenses and incomes sorted by date
-      List<Map<String, dynamic>> combinedData = [];
-
-      for (var expense in homeScreenController.filteredExpenses) {
-        combinedData.add({
-          'date': DateTime.parse(expense.createdAt ?? ''),
-          'amount': -expense.expenseAmount, // Expenses reduce the total
-        });
+      // Ensure chartData is not empty
+      if (homeScreenController.chartData.isEmpty) {
+        // Provide default data or handle the empty state
+        return const Center(
+          child: Text('No data available'),
+        );
       }
 
-      for (var income in homeScreenController.filteredIncomes) {
-        combinedData.add({
-          'date': DateTime.parse(income.created ?? ''),
-          'amount': income.incomeAmount, // Incomes increase the total
-        });
-      }
+      // Calculate the range of the data
+      double minY = homeScreenController.chartData
+          .map((s) => s.y)
+          .reduce((a, b) => a < b ? a : b);
+      double maxY = homeScreenController.chartData
+          .map((s) => s.y)
+          .reduce((a, b) => a > b ? a : b);
 
-      // Sort combined data by date
-      combinedData.sort((a, b) => a['date'].compareTo(b['date']));
+      // Calculate the center point
+      double centerY = (minY + maxY) / 2;
 
-      // Generate the FlSpot list for the graph
-      for (int i = 0; i < combinedData.length; i++) {
-        cumulativeSum += combinedData[i]['amount'];
-        spots.add(FlSpot(i.toDouble(), cumulativeSum));
-      }
+      // Adjust minY and maxY to center the chart
+      double range = maxY - minY;
+      minY = centerY - range / 0.8;
+      maxY = centerY + range / 2;
 
-      return SizedBox(
-        height: 200,
-        child: LineChart(
-          LineChartData(
-            gridData: const FlGridData(show: false),
-            titlesData: const FlTitlesData(show: false),
-            borderData: FlBorderData(
-              show: true,
-              border: Border.all(color: Colors.transparent),
-            ),
-            minX: 0,
-            maxX: spots.isNotEmpty ? spots.length.toDouble() - 1 : 6,
-            minY: spots.isNotEmpty
-                ? spots.map((s) => s.y).reduce((a, b) => a < b ? a : b)
-                : 0,
-            maxY: spots.isNotEmpty
-                ? spots.map((s) => s.y).reduce((a, b) => a > b ? a : b)
-                : 6,
-            lineBarsData: [
-              LineChartBarData(
-                spots: spots,
-                isCurved: true,
-                color: violetColor,
-                barWidth: 3,
-                isStrokeCapRound: true,
-                dotData: const FlDotData(show: false),
-                belowBarData: BarAreaData(
-                  show: true,
-                  color: violetColor.withOpacity(0.4),
-                ),
+      return Center(
+        child: SizedBox(
+          height: 200,
+          child: LineChart(
+            LineChartData(
+              gridData: const FlGridData(show: false),
+              titlesData: const FlTitlesData(show: false),
+              borderData: FlBorderData(
+                show: true,
+                border: Border.all(color: Colors.transparent),
               ),
-            ],
+              minX: 0,
+              maxX: homeScreenController.chartData.length.toDouble() - 1,
+              minY: minY,
+              maxY: maxY,
+              lineBarsData: [
+                LineChartBarData(
+                  spots: homeScreenController.chartData,
+                  isCurved: true,
+                  color: violetColor,
+                  barWidth: 6,
+                  isStrokeCapRound: true,
+                  dotData: const FlDotData(show: false),
+                  belowBarData: BarAreaData(
+                    show: true,
+                    color: violetColor.withOpacity(0.4),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -204,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
   AppBar _buildAppBar() {
     return AppBar(
       leading: const SizedBox(),
-      toolbarHeight: 250,
+      toolbarHeight: 215,
       flexibleSpace: SafeArea(
         child: Container(
           decoration: const BoxDecoration(
@@ -217,16 +351,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
+                    ClipOval(
                       child: Image.asset(
-                        "assets/images/avatar_image.png",
-                        height: 48,
-                        width: 48,
+                        "assets/images/avatar_image_1.png",
+                        height: 45,
+                        width: 45,
                       ),
                     ),
                     Row(
@@ -236,6 +365,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: violetColor,
                           size: 25,
                         ),
+                        // TODO Add Current Month Name here
                         Text(
                           "October",
                           style: AppStyle.poppinsMediumBlack(fontSize: 18),
@@ -243,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     GestureDetector(
-                      onTap: () => Get.toNamed(AppRoutes.transferDetailsScreen),
+                      onTap: () => Get.toNamed(AppRoutes.notificationScreen),
                       child: Image.asset(
                         "assets/icons/notification_icon.png",
                       ),
@@ -256,10 +386,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: <Widget>[
                   const Text('Account balance'),
                   5.h,
-                  Text(
-                    '\$9400',
-                    style: AppStyle.poppinsBoldBlack(fontSize: 28),
-                  ),
+                  Obx(() {
+                    final controller = Get.find<AccountScreenController>();
+                    final totalBalance = controller.accounts
+                        .fold<double>(
+                            0.0, (sum, account) => sum + account.balance)
+                        .toInt();
+                    return Text(
+                      '\$$totalBalance',
+                      style: AppStyle.poppinsBoldBlack(fontSize: 30),
+                    );
+                  }),
                 ],
               ),
               10.h,
@@ -277,8 +414,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       onPressed: () async {
-                        await homeScreenController.getExpenses();
-                        await homeScreenController.getIncomeList();
+                        // await homeScreenController.getExpenses();
+                        // await homeScreenController.getIncomeList();
                       },
                       child: Row(
                         children: [
@@ -303,11 +440,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style:
                                     AppStyle.poppinsRegularWhite(fontSize: 12),
                               ),
-                              Text(
-                                '\$1200',
-                                style:
-                                    AppStyle.poppinsMediumWhite(fontSize: 18),
-                              )
+                              Obx(() {
+                                final incomesTotal =
+                                    homeScreenController.incomes.fold(
+                                        0,
+                                        (sum, item) =>
+                                            sum + (item.incomeAmount).toInt());
+                                return Text(
+                                  '\$$incomesTotal',
+                                  style:
+                                      AppStyle.poppinsMediumWhite(fontSize: 18),
+                                );
+                              })
                             ],
                           )
                         ],
@@ -345,11 +489,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style:
                                     AppStyle.poppinsRegularWhite(fontSize: 12),
                               ),
-                              Text(
-                                '\$1200',
-                                style:
-                                    AppStyle.poppinsMediumWhite(fontSize: 18),
-                              )
+                              Obx(() {
+                                final expenseTotal =
+                                    homeScreenController.expenses.fold(
+                                        0,
+                                        (sum, item) =>
+                                            sum + (item.expenseAmount).toInt());
+                                return Text(
+                                  '\$$expenseTotal',
+                                  style:
+                                      AppStyle.poppinsMediumWhite(fontSize: 18),
+                                );
+                              })
                             ],
                           )
                         ],

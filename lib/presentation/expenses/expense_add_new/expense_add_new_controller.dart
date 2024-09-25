@@ -1,20 +1,24 @@
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:expenseecho/core/utils/date_time_utils.dart';
-import 'package:expenseecho/data/models/expense/expense_model.dart';
-import 'package:expenseecho/data/models/user_model/user_model.dart';
-import 'package:expenseecho/data/services/attachment_helper.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expenseecho/data/models/accounts/accounts_model.dart';
 import 'package:expenseecho/data/models/category_model.dart';
-import 'package:expenseecho/data/services/api_service_http.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
+import 'package:expenseecho/data/models/expense/expense_model.dart';
+import 'package:expenseecho/data/models/user_model/user_model.dart';
+import 'package:expenseecho/data/services/api_service/api_service_handler.dart';
+import 'package:expenseecho/data/services/attachment_helper.dart';
+import 'package:expenseecho/data/services/shared_preferences/shared_preferences_handler.dart';
+import 'package:expenseecho/data/services/sqlite_handler/handlers/account_db_handler.dart';
+import 'package:expenseecho/data/services/sqlite_handler/handlers/expense_db_handler.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:get/get.dart';
 
 class ExpenseAddNewController extends GetxController
     implements AttachmentController {
   var accounts = <AccountsModel>[].obs;
   var selectedAccount = Rxn<AccountsModel>();
+  var existingExpenseModel = Rxn<ExpenseModel>();
   var categories = <CategoryModel>[].obs;
   var selectedCategory = Rxn<CategoryModel>();
   var amountController = TextEditingController().obs;
@@ -22,6 +26,7 @@ class ExpenseAddNewController extends GetxController
   var titleController = TextEditingController().obs;
   var attachment = Rx<File?>(null);
   var loading = false.obs;
+  var connectivityResult = <ConnectivityResult>[].obs;
 
   var frequencyList = <String>[].obs;
   var fullMonthList = <String>[].obs;
@@ -83,35 +88,6 @@ class ExpenseAddNewController extends GetxController
     ]);
   }
 
-  /* var frequencyList = <String>[].obs;
-  var fullMonthList = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
-  var shortMonthList = [
-    'JAN',
-    'FEB',
-    'MAR',
-    'APR',
-    'MAY',
-    'JUN',
-    'JUL',
-    'AUG',
-    'SEP',
-    'OCT',
-    'NOV',
-    'DEC'
-  ]; */
   var dayList = List.generate(31, (index) => (index + 1).toString());
 
   var selectedFrequency = Rxn<String>();
@@ -124,9 +100,17 @@ class ExpenseAddNewController extends GetxController
   @override
   void onInit() {
     super.onInit();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initializeLocalizedLists();
+    });
     fetchAccounts();
     fetchCategories();
-    initializeLocalizedLists();
+    _checkConnectivity();
+  }
+
+  void _checkConnectivity() async {
+    // Check internet connectivity
+    connectivityResult.value = await Connectivity().checkConnectivity();
   }
 
   @override
@@ -135,13 +119,14 @@ class ExpenseAddNewController extends GetxController
   }
 
   Future<void> fetchAccounts() async {
-    UserModel? user = await SharedPreferencesHandler.getUserData();
+    UserModel? user = await UserPreferences.getUserData();
     if (user != null) {
       try {
-        var fetchedAccounts =
-            await ApiServiceHttp.fetchAccountsByUserID(userId: user.userId);
-        accounts.assignAll(fetchedAccounts);
-        print("---> E-N-C :: Fetch Accounts successfull");
+        var fetchedAccounts = await AccountHandler().getAccountsByUserId(
+          userId: user.id ?? '',
+        );
+        accounts.assignAll(fetchedAccounts!);
+        print("---> E-N-C :: Fetch Accounts successful");
       } catch (e) {
         print("---> Error :: Fetch Accounts (E-N-C) :: ${e.toString()}");
         Get.snackbar('Error', 'Failed to fetch accounts');
@@ -149,14 +134,26 @@ class ExpenseAddNewController extends GetxController
     }
   }
 
+  Future<AccountsModel> fetchAccountsByID(String accountID) async {
+    try {
+      var fetchedAccount = await AccountHandler().getAccountById(
+        accountId: accountID,
+      );
+
+      print("---> E-N-C :: Fetch Accounts successful");
+      return fetchedAccount!;
+    } catch (e) {
+      throw Exception(
+          "---> Error :: Fetch Accounts (E-N-C) :: ${e.toString()}");
+    }
+  }
+
   Future<void> fetchCategories() async {
     try {
-      var fetchedCategories =
-          await SharedPreferencesHandler.loadExpenseCategories();
+      var fetchedCategories = await CategoryPreferences.loadExpenseCategories();
       print("---> Categories from SP :: ${fetchedCategories.length}");
       if (fetchedCategories.isNotEmpty) {
         categories.assignAll(fetchedCategories);
-        // print("---> E-N-C :: Fetch Categories successful");
       } else {
         Get.snackbar('Error', 'Failed to fetch Expense categories');
       }
@@ -166,12 +163,36 @@ class ExpenseAddNewController extends GetxController
     }
   }
 
-  Future<bool> createExpense() async {
-    loading.value = true;
+  Future<void> initializeForEdit(ExpenseModel expenseModel) async {
+    print('---> Initializing Expense editing...');
+    existingExpenseModel.value = expenseModel;
+    selectedCategory.value = categories
+        .firstWhere((category) => category.name == expenseModel.category);
+    amountController.value.text = expenseModel.expenseAmount.toString();
+    descriptionController.value.text = expenseModel.description;
+    titleController.value.text = expenseModel.title;
+    selectedAccount.value = await fetchAccountsByID(expenseModel.accountId);
+    setIsRepeat(expenseModel.repeated);
+    selectedFrequency.value = expenseModel.frequency;
+    selectedMonth.value = expenseModel.startDateTime?.month.toString() ?? '';
+    selectedYear.value = expenseModel.startDateTime?.year.toString() ?? '';
+    selectedEndDay.value = expenseModel.endAfterDateTime?.day.toString() ?? '';
+    selectedEndMonth.value =
+        expenseModel.endAfterDateTime?.month.toString() ?? '';
+    selectedEndYear.value =
+        expenseModel.endAfterDateTime?.year.toString() ?? '';
+  }
 
+  Future<bool> createOrUpdateExpense({required bool isEdit}) async {
     try {
+      loading.value = true;
+
+      //* Delete previously added expenses.
+      // await ExpenseHandler().deleteAllExpenses();
+      // print('---> All Expenses => deleted.');
+
       // Check if user is logged in
-      UserModel? user = await SharedPreferencesHandler.getUserData();
+      UserModel? user = await UserPreferences.getUserData();
       if (user == null) {
         Get.snackbar('Error', 'User not logged in');
         return false;
@@ -203,26 +224,45 @@ class ExpenseAddNewController extends GetxController
         return false;
       }
 
-      // Create expense model
-      ExpenseModel expense = ExpenseModel(
-        userId: user.userId,
-        accountId: selectedAccount.value!.id,
-        category: selectedCategory.value?.name ?? 'Uncategorized',
-        description: descriptionController.value.text,
-        title: titleController.value.text,
-        expenseAmount: amount,
-        repeated: isRepeat,
-        frequency: isRepeat ? selectedFrequency.value : null,
-        startDate:
-            isRepeat ? DateTime.now().format() : null, // Use format method
-        endAfterDate: isRepeat
-            ? DateTime(
-                int.parse('20${selectedEndYear.value}'),
-                getMonthNumber(selectedEndMonth.value),
-                int.parse(selectedEndDay.value),
-              ).format()
-            : null, // Use format method
-      );
+      // Create or update expense model
+      ExpenseModel expense = existingExpenseModel.value?.copyWith(
+            userId: user.id ?? '',
+            accountId: selectedAccount.value?.id ?? 'No ID',
+            category: selectedCategory.value?.name ?? 'Uncategorized',
+            description: descriptionController.value.text,
+            title: titleController.value.text,
+            expenseAmount: amount,
+            repeated: isRepeat,
+            frequency: isRepeat ? selectedFrequency.value : null,
+            startDate:
+                isRepeat ? DateTime.now().format() : null, // Use format method
+            endAfterDate: isRepeat
+                ? DateTime(
+                    int.parse('20${selectedEndYear.value}'),
+                    getMonthNumber(selectedEndMonth.value),
+                    int.parse(selectedEndDay.value),
+                  ).format()
+                : null, // Use format method
+          ) ??
+          ExpenseModel(
+            userId: user.id ?? '',
+            accountId: selectedAccount.value?.id ?? 'No ID',
+            category: selectedCategory.value?.name ?? 'Uncategorized',
+            description: descriptionController.value.text,
+            title: titleController.value.text,
+            expenseAmount: amount,
+            repeated: isRepeat,
+            frequency: isRepeat ? selectedFrequency.value : null,
+            startDate:
+                isRepeat ? DateTime.now().format() : null, // Use format method
+            endAfterDate: isRepeat
+                ? DateTime(
+                    int.parse('20${selectedEndYear.value}'),
+                    getMonthNumber(selectedEndMonth.value),
+                    int.parse(selectedEndDay.value),
+                  ).format()
+                : null, // Use format method
+          );
 
       print('---> Expense Data :: ${expense.toString()}');
 
@@ -232,32 +272,58 @@ class ExpenseAddNewController extends GetxController
         expense = expense.copyWith(attachmentLink: 'attachmentLink');
       }
 
-      // Add expense to backend
-      bool success = await ApiServiceHttp.addExpense(expense: expense);
-      if (!success) {
-        Get.snackbar('Error', 'Failed to add expense');
-        return false;
+      // Add or update expense in local database
+      if (isEdit) {
+        await ExpenseHandler().updateExpense(
+          expense: expense,
+          expenseId: existingExpenseModel.value!.id ?? '',
+        );
+      } else {
+        await ExpenseHandler().insertExpense(expense: expense);
       }
 
-      // Update account balance
+      // Update account balance locally
       double newBalance = selectedAccount.value!.balance - amount;
-      bool balanceUpdated = await ApiServiceHttp.updateAccountBalance(
-        accountId: selectedAccount.value!.id,
+      await AccountHandler().updateAccountBalance(
+        accountId: selectedAccount.value?.id ?? 'No ID',
         newBalance: newBalance,
       );
-      if (!balanceUpdated) {
-        Get.snackbar('Error', 'Failed to update account balance');
-        return false;
-      }
 
       // Update local account balance
       selectedAccount.value =
           selectedAccount.value!.copyWith(balance: newBalance);
 
-      Get.snackbar('Success', 'Expense added successfully');
+      if (connectivityResult == ConnectivityResult.none) {
+        // No internet connection, add expense and balance update to queue
+        await ExpenseAPIService.addExpenseToQueue(expense);
+        await AccountAPIService.addAccountToQueue(selectedAccount.value!);
+        Get.snackbar('Success', 'Expense added to local database and queue');
+      } else {
+        // Internet connection available, sync expense and balance update with server
+        bool success = await ExpenseAPIService.addExpense(expense: expense);
+        if (!success) {
+          // Add to queue if API call fails
+          await ExpenseAPIService.addExpenseToQueue(expense);
+          Get.snackbar('Error', 'Failed to add expense, added to queue');
+          return false;
+        }
+
+        bool balanceUpdated = await AccountAPIService.updateAccountBalance(
+          accountId: selectedAccount.value?.id ?? 'No ID',
+          newBalance: newBalance,
+        );
+        if (!balanceUpdated) {
+          // Add to queue if API call fails
+          await AccountAPIService.addAccountToQueue(selectedAccount.value!);
+          Get.snackbar(
+              'Error', 'Failed to update account balance, added to queue');
+          return false;
+        }
+      }
+
       return true;
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: ${e.toString()}');
+      print('---> Error while adding expense: ${e.toString()}');
       return false;
     } finally {
       loading.value = false;

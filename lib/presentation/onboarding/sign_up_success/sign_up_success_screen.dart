@@ -17,7 +17,7 @@ class _SignUpSuccessScreenState extends State<SignUpSuccessScreen> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offNamed(AppRoutes.mainScreen);
+      Get.offNamed(AppRoutes.mainScreenHome);
     });
     super.initState();
   }

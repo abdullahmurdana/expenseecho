@@ -1,6 +1,6 @@
-import 'package:get/get.dart';
 import 'package:expenseecho/data/models/currency/currency_model.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
+import 'package:expenseecho/data/services/shared_preferences/currency_preferences.dart';
+import 'package:get/get.dart';
 
 class SettingsCurrencyScreenController extends GetxController {
   var selectedCurrency = Rxn<CurrencyModel>();
@@ -12,7 +12,7 @@ class SettingsCurrencyScreenController extends GetxController {
   }
 
   Future<void> loadCurrency() async {
-    final currency = await SharedPreferencesHandler.getSelectedCurrency();
+    final currency = await CurrencyPreferences.getSelectedCurrency();
     // print(
     //     "---> Currency Data :: Currency Controller :: ${currency.toString()}");
     if (currency != null) {
@@ -28,12 +28,11 @@ class SettingsCurrencyScreenController extends GetxController {
 
   void selectCurrency(CurrencyModel currency) async {
     selectedCurrency.value = currency;
-    await SharedPreferencesHandler.saveSelectedCurrency(currency);
+    await CurrencyPreferences.saveSelectedCurrency(currency);
   }
 
   Future<List<CurrencyModel>> getCurriences() async {
-    List<CurrencyModel> currencies =
-        await SharedPreferencesHandler.getCurrencies();
+    List<CurrencyModel> currencies = await CurrencyPreferences.getCurrencies();
     return currencies;
   }
 }

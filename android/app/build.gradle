@@ -1,14 +1,15 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
+    id 'com.google.gms.google-services'
+    id 'kotlin-android'
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-ext.kotlin_version = "1.8.22" // Specify the latest Kotlin version here
-
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    // Other dependencies
+    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 }
 
 android {
@@ -27,7 +28,7 @@ android {
 
     defaultConfig {
         applicationId = "com.mimi.expenseecho"
-        minSdk = flutter.minSdkVersion
+        minSdkVersion 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

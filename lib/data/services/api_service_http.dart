@@ -1,22 +1,24 @@
-import 'dart:convert';
+/* import 'dart:convert';
 
 import 'package:expenseecho/data/models/accounts/accounts_model.dart';
+import 'package:expenseecho/data/models/budget/budget_model.dart';
 import 'package:expenseecho/data/models/expense/expense_model.dart';
 import 'package:expenseecho/data/models/income/income_model.dart';
+import 'package:expenseecho/data/models/transfers/transfers_model.dart';
 import 'package:expenseecho/data/models/user_model/user_model.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
+import 'package:expenseecho/data/services/shared_preferences/user_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class ApiServiceHttp {
-  static const String url = 'https://288d-103-72-2-115.ngrok-free.app';
+  static const String baseUrl = 'https://7503-103-72-2-73.ngrok-free.app';
 
-  static Future<Map<String, dynamic>> signInHttp({
+  /* static Future<Map<String, dynamic>> signInHttp({
     required String identity,
     required String password,
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('$url/api/collections/users/auth-with-password'),
+        Uri.parse('$baseUrl/api/collections/users/auth-with-password'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({"identity": identity, "password": password}),
       );
@@ -40,7 +42,7 @@ class ApiServiceHttp {
   // Method to request a password reset email
   static Future<void> sendResetEmail(String email) async {
     final response = await http.post(
-      Uri.parse('$url/api/password_resets'),
+      Uri.parse('$baseUrl/api/password_resets'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({"email": email}),
     );
@@ -52,7 +54,7 @@ class ApiServiceHttp {
 
   static Future<void> resetPassword(String token, String newPassword) async {
     final response = await http.patch(
-      Uri.parse('$url/api/password_resets/$token'),
+      Uri.parse('$baseUrl/api/password_resets/$token'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({"password": newPassword}),
     );
@@ -60,11 +62,11 @@ class ApiServiceHttp {
     if (response.statusCode != 200) {
       throw Exception('Failed to reset password');
     }
-  }
+  } */
 
   // Getting all accounts and then filter according to user.
-  static Future<List<AccountsModel>> fetchAccounts() async {
-    var uri = '$url/api/collections/accounts/records';
+  /* static Future<List<AccountsModel>> fetchAccounts() async {
+    var uri = '$baseUrl/api/collections/accounts/records';
     final response = await http.get(
       Uri.parse(uri),
     );
@@ -78,7 +80,7 @@ class ApiServiceHttp {
       final List<dynamic> items = data['items'];
 
       // Get the user data from SharedPreferences
-      UserModel? user = await SharedPreferencesHandler.getUserData();
+      UserModel? user = await UserPreferences.getUserData();
       if (user == null) {
         throw Exception('---> User data not found in SharedPreferences');
       }
@@ -100,7 +102,8 @@ class ApiServiceHttp {
   static Future<List<AccountsModel>> fetchAccountsByUserID(
       {required String userId}) async {
     // Get the user data from SharedPreferences
-    var uri = '$url/api/collections/accounts/records?fields=*,user_id=$userId';
+    var uri =
+        '$baseUrl/api/collections/accounts/records?fields=*,user_id=$userId';
     final response = await http.get(
       Uri.parse(uri),
     );
@@ -123,43 +126,134 @@ class ApiServiceHttp {
     } else {
       throw Exception('---> Failed to load accounts list');
     }
-  }
+  } */
 
-  Future<List<ExpenseModel>> fetchExpenses() async {
+  static Future<List<ExpenseModel>> fetchExpenses() async {
     final response = await http.get(
       Uri.parse(
-        '$url/api/collections/expenses/records',
+        '$baseUrl/api/collections/expenses/records',
       ),
       // headers: headers,
     );
 
-    print("---> JSON Status code :: Get Expense List ::${response.headers}");
+    print("---> JSON Status code :: Get Expense List ::${response.statusCode}");
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> items = data['items'];
 
-      return items.map((item) => ExpenseModel.fromJson(item)).toList();
+      return items.map((item) => ExpenseModel.fromMap(item)).toList();
     } else {
       throw Exception('---> Failed to load expenses');
     }
   }
 
-  Future<List<IncomeModel>> fetchIncomeList() async {
+  static Future<List<ExpenseModel>> fetchExpensesById(
+      {required String userId}) async {
+    var uri =
+        '$baseUrl/api/collections/expenses/records?fields=*,user_id=$userId';
     final response = await http.get(
-      Uri.parse('$url/api/collections/income/records'),
+      Uri.parse(
+        uri,
+      ),
+    );
+
+    print("---> JSON Status code :: Get Expense List ::${response.statusCode}");
+    // print("---> URL :: Get Expense List by ID :: $uri");
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> items = data['items'];
+      // print("Items :: Expense :: ${items.toString()}");
+
+      return items.map((item) => ExpenseModel.fromMap(item)).toList();
+    } else {
+      throw Exception('---> Failed to load expenses');
+    }
+  }
+
+  static Future<List<IncomeModel>> fetchIncomeList() async {
+    var uri = '$baseUrl/api/collections/incomes/records';
+    final response = await http.get(
+      Uri.parse(uri),
       // headers: headers,
     );
 
     print("---> JSON Status code :: Get Income List ::${response.statusCode}");
+    // print("---> URL :: Get Account List :: $uri");
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> items = data['items'];
 
-      return items.map((item) => IncomeModel.fromJson(item)).toList();
+      return items.map((item) => IncomeModel.fromMap(item)).toList();
     } else {
       throw Exception('---> Failed to load income list');
+    }
+  }
+
+  static Future<List<IncomeModel>> fetchIncomeListById(
+      {required String userId}) async {
+    var uri =
+        '$baseUrl/api/collections/incomes/records?fields=*,user_id=$userId';
+    final response = await http.get(
+      Uri.parse(uri),
+      // headers: headers,
+    );
+
+    print("---> JSON Status code :: Get Income List ::${response.statusCode}");
+    // print("---> URL :: Get Income List by ID :: $uri");
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> items = data['items'];
+      return items.map((item) => IncomeModel.fromMap(item)).toList();
+    } else {
+      throw Exception('---> Failed to load income list');
+    }
+  }
+
+  static Future<List<BudgetModel>> fetchBudgetListById(
+      {required String userId}) async {
+    var uri =
+        '$baseUrl/api/collections/budgets/records?fields=*,user_id=$userId';
+    final response = await http.get(
+      Uri.parse(uri),
+      // headers: headers,
+    );
+
+    print("---> JSON Status code :: Get Budget List ::${response.statusCode}");
+    // print("---> URL :: Get Budget List by ID :: $uri");
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> items = data['items'];
+      // print('---> Budget list :: ${items.toString()}');
+      return items.map((item) => BudgetModel.fromMap(item)).toList();
+    } else {
+      throw Exception('---> Failed to load budget list');
+    }
+  }
+
+  static Future<List<TransfersModel>> fetchTransfers() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/collections/transfers/records'),
+      // headers: headers,
+    );
+
+    print(
+        "---> JSON Status code :: Get Transfer List ::${response.statusCode}");
+    print(
+        "---> JSON Status code :: Get Transfer List ::${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> items = data['items'];
+      print("---> JSON Status code :: Transfer List ::${items.toString()}");
+
+      return items.map((item) => TransfersModel.fromMap(item)).toList();
+    } else {
+      throw Exception('---> Failed to load transfer list');
     }
   }
 
@@ -180,7 +274,7 @@ class ApiServiceHttp {
     };
 
     final response = await http.post(
-      Uri.parse('$url/api/collections/transfers/records'),
+      Uri.parse('$baseUrl/api/collections/transfers/records'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -200,7 +294,7 @@ class ApiServiceHttp {
 
   static Future<bool> updateAccountBalance(
       {required String accountId, required double newBalance}) async {
-    final String uri = '$url/api/collections/accounts/records/$accountId';
+    final String uri = '$baseUrl/api/collections/accounts/records/$accountId';
 
     final Map<String, dynamic> body = {
       'balance': newBalance,
@@ -225,7 +319,7 @@ class ApiServiceHttp {
   }
 
   static Future<bool> addExpense({required ExpenseModel expense}) async {
-    final uri = Uri.parse('$url/api/collections/expenses/records');
+    final uri = Uri.parse('$baseUrl/api/collections/expenses/records');
     final response = await http.post(
       uri,
       headers: {
@@ -242,8 +336,49 @@ class ApiServiceHttp {
     }
   }
 
+  static Future<bool> createBudget({required BudgetModel budgetModel}) async {
+    final uri = Uri.parse('$baseUrl/api/collections/budgets/records');
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: budgetModel.toJson(),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      print('Failed to add budget: ${response.statusCode}');
+      return false;
+    }
+  }
+
+  static Future<bool> updateBudget(
+      {required BudgetModel budgetModel, String? budgetId}) async {
+    print('---> Budget ID :: update:: $budgetId ');
+    print('---> Budget body :: update:: ${budgetModel.toJson()} ');
+    final uri = Uri.parse('$baseUrl/api/collections/budgets/records/$budgetId');
+    final response = await http.patch(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: budgetModel.toJson(),
+    );
+    print('---> URL :: update:: $uri ');
+    print('---> Status code :: update:: ${response.statusCode} ');
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to update budget: ${response.reasonPhrase}');
+      return false;
+    }
+  }
+
   static Future<bool> addIncome({required IncomeModel income}) async {
-    final uri = Uri.parse('$url/api/collections/incomes/records');
+    final uri = Uri.parse('$baseUrl/api/collections/incomes/records');
     final response = await http.post(
       uri,
       headers: {
@@ -259,4 +394,22 @@ class ApiServiceHttp {
       return false;
     }
   }
+
+  static fetchAccountDeatilsById({required String accountId}) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/collections/accounts/records/:$accountId'),
+      // headers: headers,
+    );
+
+    print("---> JSON Status code :: Get Account Info ::${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      return AccountsModel.fromMap(data);
+    } else {
+      throw Exception('---> Failed to load transfer list');
+    }
+  }
 }
+ */

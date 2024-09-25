@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import 'package:get/get.dart';
 import 'package:expenseecho/data/models/language/language_model.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
+import 'package:expenseecho/data/services/shared_preferences/shared_preferences_handler.dart';
+import 'package:get/get.dart';
 
 class SettingsLanguageScreenController extends GetxController {
   var selectedLanguage = LanguageModel(name: 'English', locale: 'en').obs;
@@ -14,8 +14,7 @@ class SettingsLanguageScreenController extends GetxController {
   }
 
   void loadLanguage() async {
-    LanguageModel? language =
-        await SharedPreferencesHandler.getSelectedLanguage();
+    LanguageModel? language = await LanguagePreferences.getSelectedLanguage();
     if (language != null) {
       selectedLanguage.value = language;
       Get.updateLocale(Locale(language.locale));
@@ -24,13 +23,12 @@ class SettingsLanguageScreenController extends GetxController {
 
   void selectLanguage(LanguageModel language) async {
     selectedLanguage.value = language;
-    await SharedPreferencesHandler.saveSelectedLanguage(language);
+    await LanguagePreferences.saveSelectedLanguage(language);
     Get.updateLocale(Locale(language.locale));
   }
 
   Future<List<LanguageModel>> getLanguages() async {
-    List<LanguageModel> languages =
-        await SharedPreferencesHandler.getLanguages();
+    List<LanguageModel> languages = await LanguagePreferences.getLanguages();
     return languages;
   }
 }

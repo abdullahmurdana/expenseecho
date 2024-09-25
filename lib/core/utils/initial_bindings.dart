@@ -1,11 +1,16 @@
 import 'package:expenseecho/core/app_exports.dart';
+import 'package:expenseecho/presentation/budgets/budget_create_new/budget_create_new_controller.dart';
+import 'package:expenseecho/presentation/budgets/budget_details/budget_details_controller.dart';
+import 'package:expenseecho/presentation/budgets/budget_empty_state/budget_empty_state_controller.dart';
+import 'package:expenseecho/presentation/budgets/budget_list_view/budget_list_view_controller.dart';
 import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new_controller.dart';
 import 'package:expenseecho/presentation/expenses/expense_details/expense_details_controller.dart';
 import 'package:expenseecho/presentation/home/home_screen/home_screen_controller.dart';
 import 'package:expenseecho/presentation/home/main_screen/main_screen_controller.dart';
+import 'package:expenseecho/presentation/home/notification_screen/notification_screen_controller.dart';
 import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_controller.dart';
 import 'package:expenseecho/presentation/incomes/income_details/income_details_controller.dart';
-import 'package:expenseecho/presentation/onboarding/add_new_account/add_new_account_controller.dart';
+import 'package:expenseecho/presentation/profile/accounts/add_new_account/add_new_account_controller.dart';
 import 'package:expenseecho/presentation/onboarding/forgot_screen/forgot_screen_controller.dart';
 import 'package:expenseecho/presentation/onboarding/launch_screen/launch_screen_controller.dart';
 import 'package:expenseecho/presentation/onboarding/login_screen/login_screen_controller.dart';
@@ -16,7 +21,8 @@ import 'package:expenseecho/presentation/onboarding/setup_pin/setup_pin_controll
 import 'package:expenseecho/presentation/onboarding/sign_up_screen/sign_up_screen_controller.dart';
 import 'package:expenseecho/presentation/onboarding/sign_up_success/sign_up_success_controller.dart';
 import 'package:expenseecho/presentation/onboarding/email_verification_screen/email_verification_controller.dart';
-import 'package:expenseecho/presentation/profile/account_screen/account_screen_controller.dart';
+import 'package:expenseecho/presentation/profile/accounts/account_details/account_details_controller.dart';
+import 'package:expenseecho/presentation/profile/accounts/account_screen/account_screen_controller.dart';
 import 'package:expenseecho/presentation/profile/export_data/export_data_screen/export_data_screen_controller.dart';
 import 'package:expenseecho/presentation/profile/export_data/export_data_success/export_data_success_controller.dart';
 import 'package:expenseecho/presentation/profile/profile_screen/profile_screen_controller.dart';
@@ -26,7 +32,15 @@ import 'package:expenseecho/presentation/profile/settings/settings_notifications
 import 'package:expenseecho/presentation/profile/settings/settings_screen/settings_screen_controller.dart';
 import 'package:expenseecho/presentation/profile/settings/settings_security_screen/settings_security_screen_controller.dart';
 import 'package:expenseecho/presentation/profile/settings/settings_theme_screen/settings_theme_screen_controller.dart';
+import 'package:expenseecho/presentation/transactions/financial_report/financial_report_details/financial_report_details_controller.dart';
+import 'package:expenseecho/presentation/transactions/financial_report/financial_story_budget/financial_story_budget_controller.dart';
+import 'package:expenseecho/presentation/transactions/financial_report/financial_story_expense/financial_story_expense_controller.dart';
+import 'package:expenseecho/presentation/transactions/financial_report/financial_story_income/financial_story_income_controller.dart';
+import 'package:expenseecho/presentation/transactions/financial_report/financial_story_quote/financial_story_quote_controller.dart';
+import 'package:expenseecho/presentation/transactions/financial_report/financial_story_screen/financial_story_screen_controller.dart';
+import 'package:expenseecho/presentation/transactions/transactions_screen/transactions_screen_controller.dart';
 import 'package:expenseecho/presentation/transfers/transfer_add_new/transfer_add_new_controller.dart';
+import 'package:expenseecho/presentation/transfers/transfer_details/transfer_details_controller.dart';
 
 class InitialBindings extends Bindings {
   @override
@@ -45,6 +59,7 @@ class InitialBindings extends Bindings {
     Get.lazyPut(() => ResetPasswordScreenController(), fenix: true);
     Get.lazyPut(() => ProfileScreenController(), fenix: true);
     Get.lazyPut(() => AccountScreenController(), fenix: true);
+    Get.lazyPut(() => AccountDetailsController(), fenix: true);
     Get.lazyPut(() => SettingsScreenController(), fenix: true);
     Get.lazyPut(() => SettingsCurrencyScreenController(), fenix: true);
     Get.lazyPut(() => SettingsThemeScreenController(), fenix: true);
@@ -55,10 +70,23 @@ class InitialBindings extends Bindings {
     Get.lazyPut(() => ExportDataSuccessController(), fenix: true);
     Get.lazyPut(() => HomeScreenController(), fenix: true);
     Get.lazyPut(() => MainScreenController(), fenix: true);
+    Get.lazyPut(() => NotificationScreenController(), fenix: true);
     Get.lazyPut(() => TransferAddNewController(), fenix: true);
+    Get.lazyPut(() => TransferDetailsController(), fenix: true);
     Get.lazyPut(() => ExpenseAddNewController(), fenix: true);
     Get.lazyPut(() => ExpenseDetailsController(), fenix: true);
     Get.lazyPut(() => IncomeAddNewController(), fenix: true);
     Get.lazyPut(() => IncomeDetailsController(), fenix: true);
+    Get.lazyPut(() => TransactionsScreenController(), fenix: true);
+    Get.lazyPut(() => FinancialStoryScreenController(), fenix: true);
+    Get.lazyPut(() => FinancialStoryExpenseController(), fenix: true);
+    Get.lazyPut(() => FinancialStoryIncomeController(), fenix: true);
+    Get.lazyPut(() => FinancialStoryBudgetController(), fenix: true);
+    Get.lazyPut(() => FinancialStoryQuoteController(), fenix: true);
+    Get.lazyPut(() => FinancialReportDetailsController(), fenix: true);
+    Get.lazyPut(() => BudgetEmptyStateController(), fenix: true);
+    Get.lazyPut(() => BudgetCreateNewController(), fenix: true);
+    Get.lazyPut(() => BudgetListViewController(), fenix: true);
+    Get.lazyPut(() => BudgetDetailsController(), fenix: true);
   }
 }

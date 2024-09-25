@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class ExpenseModel {
@@ -16,6 +15,16 @@ class ExpenseModel {
   String? startDate;
   String? createdAt;
   String? updatedAt;
+
+  DateTime? get createdAtDateTime =>
+      createdAt != null ? DateTime.parse(createdAt!) : null;
+  DateTime? get updatedAtDateTime =>
+      updatedAt != null ? DateTime.parse(updatedAt!) : null;
+  DateTime? get startDateTime =>
+      startDate != null ? DateTime.parse(startDate!) : null;
+  DateTime? get endAfterDateTime =>
+      endAfterDate != null ? DateTime.parse(endAfterDate!) : null;
+
   ExpenseModel({
     this.id,
     required this.userId,
@@ -77,7 +86,7 @@ class ExpenseModel {
       'description': description,
       'expense_amount': expenseAmount,
       'attachment_link': attachmentLink,
-      'repeated': repeated,
+      'repeated': repeated ? 1 : 0,
       'frequency': frequency,
       'end_after_date': endAfterDate,
       'start_date': startDate,
@@ -94,17 +103,18 @@ class ExpenseModel {
       category: map['category'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
-      expenseAmount: map['expense_amount'] as double,
+      expenseAmount: (map['expense_amount'] as num).toDouble(),
       attachmentLink: map['attachment_link'] != null
-          ? map['attachmentLink'] as String
+          ? map['attachment_link'] as String
           : null,
-      repeated: map['repeated'] as bool,
+      repeated: map['repeated'] == 1,
       frequency: map['frequency'] != null ? map['frequency'] as String : null,
-      endAfterDate:
-          map['end_after_date'] != null ? map['endAfterDate'] as String : null,
-      startDate: map['start_date'] != null ? map['startDate'] as String : null,
-      createdAt: map['created'] != null ? map['createdAt'] as String : null,
-      updatedAt: map['updated'] != null ? map['updatedAt'] as String : null,
+      endAfterDate: map['end_after_date'] != null
+          ? map['end_after_date'] as String
+          : null,
+      startDate: map['start_date'] != null ? map['start_date'] as String : null,
+      createdAt: map['created'] != null ? map['created'] as String : null,
+      updatedAt: map['updated'] != null ? map['updated'] as String : null,
     );
   }
 

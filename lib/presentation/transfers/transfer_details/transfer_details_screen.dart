@@ -2,10 +2,13 @@ import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/date_time_utils.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
+import 'package:expenseecho/data/models/accounts/accounts_model.dart';
+import 'package:expenseecho/data/models/transfers/transfers_model.dart';
+import 'package:expenseecho/presentation/transfers/transfer_add_new/transfer_add_new_screen.dart';
+import 'package:expenseecho/presentation/transfers/transfer_details/transfer_details_controller.dart';
 import 'package:expenseecho/widgets/custom_dashed_divider.dart';
 import 'package:expenseecho/widgets/custom_success_dialog.dart';
 import 'package:expenseecho/widgets/custom_widgets.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -13,14 +16,19 @@ import 'package:get/get.dart';
 
 class TransferDetailsScreen extends StatefulWidget {
   // TODO add transfer model to constructor.
-  // final TransfersModel transfersModel;
-  const TransferDetailsScreen({super.key});
+  final TransfersModel transfersModel;
+  const TransferDetailsScreen({super.key, required this.transfersModel});
 
   @override
   _TransferDetailsScreenState createState() => _TransferDetailsScreenState();
 }
 
 class _TransferDetailsScreenState extends State<TransferDetailsScreen> {
+  final transferDetailsController = Get.find<TransferDetailsController>();
+
+  late TransfersModel transferModel;
+  AccountsModel? fromAccountsModel;
+  AccountsModel? toAccountsModel;
   @override
   void initState() {
     super.initState();
@@ -28,6 +36,19 @@ class _TransferDetailsScreenState extends State<TransferDetailsScreen> {
       statusBarColor: blueThemeColor,
       statusBarIconBrightness: Brightness.light,
     ));
+    transferModel = widget.transfersModel;
+    _fetchAccountInfo(transferModel);
+  }
+
+  _fetchAccountInfo(TransfersModel transferModel) async {
+    fromAccountsModel = await transferDetailsController.getAccountDetails(
+        accountId: transferModel.fromAccountId);
+    toAccountsModel = await transferDetailsController.getAccountDetails(
+        accountId: transferModel.toAccountId);
+
+    print(
+        '---> Account Details :: From Details:: ${fromAccountsModel.toString()}');
+    print('---> Account Details :: To Details:: ${toAccountsModel.toString()}');
   }
 
   @override
@@ -52,7 +73,12 @@ class _TransferDetailsScreenState extends State<TransferDetailsScreen> {
       child: buildElevatedButton(
         height: 56,
         width: size.width,
-        onTapped: () {},
+        onTapped: () => Get.to(
+          () => TransferAddNewScreen(
+            isEdit: true,
+            transfersModel: transferModel,
+          ),
+        ),
         title: localization.lbl_edit,
         bgColor: violetColor,
         fgColor: lightThemeColor,
@@ -131,7 +157,7 @@ class _TransferDetailsScreenState extends State<TransferDetailsScreen> {
                             children: [
                               // TODO use transfer amount here
                               Text(
-                                '\$120',
+                                '\$${transferModel.amount.toInt()}',
                                 style:
                                     AppStyle.poppinsMediumWhite(fontSize: 60),
                               ),
@@ -177,7 +203,7 @@ class _TransferDetailsScreenState extends State<TransferDetailsScreen> {
                       10.h,
                       // TODO use transfer description here
                       Text(
-                        localization.msg_export_success,
+                        transferModel.description,
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 4,
@@ -305,7 +331,7 @@ class _TransferDetailsScreenState extends State<TransferDetailsScreen> {
                         ),
                         // TODO add transfer From here
                         Text(
-                          "Bank",
+                          fromAccountsModel?.name ?? '',
                           style: AppStyle.poppinsCustom(
                               fontSize: 17,
                               color: darkThemeColor,
@@ -326,7 +352,7 @@ class _TransferDetailsScreenState extends State<TransferDetailsScreen> {
                         ),
                         // TODO Add account name here
                         Text(
-                          "Wallet",
+                          toAccountsModel?.name ?? '',
                           style: AppStyle.poppinsCustom(
                               fontSize: 17,
                               color: darkThemeColor,
@@ -413,8 +439,22 @@ class _TransferDetailsScreenState extends State<TransferDetailsScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       Get.back();
-                      showSuccessDialog(
-                          message: localization.msg_success_remove_transaction);
+                      Get.back();
+                      try {
+                        // Delete from local database
+                        await transferDetailsController
+                            .deleteTransfer(transferModel)
+                            .then((value) {
+                          if (value) {
+                            showSuccessDialog(
+                                message: localization
+                                    .msg_success_remove_transaction);
+                          }
+                        });
+                      } catch (e) {
+                        print('---> Error deleting transfer: $e');
+                        // Show error dialog or message
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: violetColor,

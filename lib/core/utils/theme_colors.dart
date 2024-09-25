@@ -8,7 +8,7 @@ const int _lightPrimaryValue = 0xFFFFFFFF;
 const int _redValue = 0xFFFD3C4A;
 const int _greenValue = 0xFF00A86B;
 const int _blueValue = 0xFF0077FF;
-const int _yellowValue = 0xFF00A86B;
+const int _yellowValue = 0xFFFCAC12;
 const int _tealPrimaryValue = 0xFF008080;
 const int _orangePrimaryValue = 0xFFFF5722;
 
@@ -115,7 +115,25 @@ const Map<String, Color> iconToBackgroundColor = {
   'Transportation': Color(0xFFBDDCFF),
   'Shopping': Color(0xFFFCEED4),
   'Utility Bills': Color(0xFFFFDAB9),
-  'Subscriptions': Color(0xFFFCE4EC),
+  'Subscriptions': Color(0xFFEEE5FF),
   'Salary': Color(0xFFCFFAEA),
-  'Passive Income': Color(0xFF292B2D),
+  'Passive Income': Color(0xFF91919F),
+};
+const Map<String, Color> iconForegroundColor = {
+  'Food': Color(0xFFFD3C4A),
+  'Transportation': Color(0xFF0077FF),
+  'Shopping': Color(0xFFFCAC12),
+  'Utility Bills': Color(0xFFFF5722),
+  'Subscriptions': Color(0xFF7F3DFF),
+  'Salary': Color(0xFF00A86B),
+  'Passive Income': Color(0xFF0D0E0F),
+};
+const Map<String, String> categoryTileIcon = {
+  'Food': "assets/icons/food_icon.png",
+  'Transportation': "assets/icons/transportation_icon.png",
+  'Shopping': "assets/icons/shopping_bag_icon.png",
+  'Utility Bills': "assets/icons/utilities_bill_icon_orange.png",
+  'Subscriptions': "assets/icons/subscription_icon.png",
+  'Salary': "assets/icons/salary_icon.png",
+  'Passive Income': "assets/icons/salary_icon_dark.png",
 };

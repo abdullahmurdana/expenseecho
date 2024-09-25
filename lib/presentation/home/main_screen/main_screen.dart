@@ -1,13 +1,16 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-import 'package:expenseecho/routes/app_routes.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
 import 'package:expenseecho/core/utils/theme_colors.dart';
+import 'package:expenseecho/presentation/budgets/budget_list_view/budget_list_view_screen.dart';
+import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new_screen.dart';
 import 'package:expenseecho/presentation/home/home_screen/home_screen.dart';
 import 'package:expenseecho/presentation/home/main_screen/main_screen_controller.dart';
+import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_screen.dart';
 import 'package:expenseecho/presentation/profile/profile_screen/profile_screen.dart';
+import 'package:expenseecho/presentation/transactions/transactions_screen/transactions_screen.dart';
+import 'package:expenseecho/presentation/transfers/transfer_add_new/transfer_add_new_screen.dart';
 import 'package:expenseecho/widgets/expandable_fab.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.index});
@@ -20,6 +23,32 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final controller = Get.find<MainScreenController>();
+
+  var pagesList = const [
+    HomeScreen(),
+    TransactionsScreen(),
+    BudgetListViewScreen(),
+    ProfileScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Obx(() {
+        return IndexedStack(
+          index: controller.bottomNavIndex.value,
+          children: pagesList,
+        );
+      }),
+      bottomNavigationBar: _buildAnimatedBottomNavbar(controller),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: _buildFAB(),
+    );
+  }
+
+  Widget _buildNavBar() {
+    return Container();
+  }
 
   Widget _buildAnimatedBottomNavbar(MainScreenController controller) {
     return Obx(
@@ -48,11 +77,10 @@ class _MainScreenState extends State<MainScreen> {
             ],
           );
         },
-        backgroundColor: lightThemeColor,
+        backgroundColor: yellowThemeColor,
         activeIndex: controller.bottomNavIndex.value,
         notchMargin: -70,
-        notchSmoothness:
-            NotchSmoothness.verySmoothEdge, // Smoother, smaller notch
+        notchSmoothness: NotchSmoothness.verySmoothEdge,
         gapLocation: GapLocation.center,
         onTap: (index) => controller.changeTabIndex(index),
       ),
@@ -71,8 +99,9 @@ class _MainScreenState extends State<MainScreen> {
           color: greenThemeColor,
           icon: Image.asset("assets/icons/income_icon_light.png"),
           onPressed: () {
-            // TODO Navigate to Add Transfer screen
-            Get.toNamed(AppRoutes.incomeAddNewScreen);
+            Get.to(
+              () => const IncomeAddNewScreen(isEdit: false),
+            );
           },
           heroTag: 'income',
         ),
@@ -80,8 +109,9 @@ class _MainScreenState extends State<MainScreen> {
           color: blueThemeColor,
           icon: Image.asset("assets/icons/transfer_icon_light.png"),
           onPressed: () {
-            // TODO Navigate to Add Transfer screen
-            Get.toNamed(AppRoutes.transferAddNewScreen);
+            Get.to(
+              () => const TransferAddNewScreen(isEdit: false),
+            );
           },
           heroTag: 'transfer',
         ),
@@ -89,30 +119,13 @@ class _MainScreenState extends State<MainScreen> {
           color: redThemeColor,
           icon: Image.asset("assets/icons/expense_icon_light.png"),
           onPressed: () {
-            // TODO Navigate to Add Expense screen
-            Get.toNamed(AppRoutes.expenseAddNewScreen);
+            Get.to(
+              () => const ExpenseAddNewScreen(isEdit: false),
+            );
           },
           heroTag: 'expense',
         )
       ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Obx(() => IndexedStack(
-            index: controller.bottomNavIndex.value,
-            children: const [
-              HomeScreen(),
-              HomeScreen(),
-              HomeScreen(),
-              ProfileScreen(),
-            ],
-          )),
-      bottomNavigationBar: _buildAnimatedBottomNavbar(controller),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: _buildFAB(),
     );
   }
 }

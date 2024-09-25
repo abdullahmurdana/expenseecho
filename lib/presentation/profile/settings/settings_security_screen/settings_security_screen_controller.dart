@@ -1,5 +1,5 @@
+import 'package:expenseecho/data/services/shared_preferences/shared_preferences_handler.dart';
 import 'package:get/get.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 
 class SettingsSecurityScreenController extends GetxController {
   var selectedSecurity = 'PIN'.obs;
@@ -11,7 +11,7 @@ class SettingsSecurityScreenController extends GetxController {
   }
 
   Future<void> loadSelectedSecurity() async {
-    final security = await SharedPreferencesHandler.getSecurity();
+    final security = await SecurityPreferences.getSecurity();
     if (security != null) {
       selectedSecurity.value = security;
     }
@@ -19,7 +19,7 @@ class SettingsSecurityScreenController extends GetxController {
 
   Future<void> selectSecurity(String security) async {
     selectedSecurity.value = security;
-    await SharedPreferencesHandler.saveSecurity(security);
+    await SecurityPreferences.saveSecurity(security);
   }
 
   Future<List<String>> getSecurities() async {

@@ -1,5 +1,5 @@
+import 'package:expenseecho/data/services/shared_preferences/shared_preferences_handler.dart';
 import 'package:get/get.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 
 class SettingsThemeScreenController extends GetxController {
   var selectedTheme = 'Light'.obs;
@@ -11,7 +11,7 @@ class SettingsThemeScreenController extends GetxController {
   }
 
   Future<void> loadSelectedTheme() async {
-    final theme = await SharedPreferencesHandler.getTheme();
+    final theme = await ThemePreferences.getTheme();
     if (theme != null) {
       selectedTheme.value = theme;
     }
@@ -19,7 +19,7 @@ class SettingsThemeScreenController extends GetxController {
 
   Future<void> selectTheme(String theme) async {
     selectedTheme.value = theme;
-    await SharedPreferencesHandler.saveTheme(theme);
+    await ThemePreferences.saveTheme(theme);
   }
 
   Future<List<String>> getThemes() async {

@@ -1,10 +1,3 @@
-import 'package:expenseecho/data/models/category_model.dart';
-import 'package:expenseecho/data/models/currency/currency_model.dart';
-import 'package:expenseecho/data/models/language/language_model.dart';
-import 'package:expenseecho/data/models/user_model/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-
 class SharedPreferencesHandler {
   static const String _authTokenKey = 'auth_token';
   static const String _budgetAlertKey = 'budget_alert';
@@ -21,8 +14,25 @@ class SharedPreferencesHandler {
   static const String _userKey = 'current_user';
   static const String _userPinKey = 'user_pin';
   static const String _userSignedInKey = 'user_signed_in';
+  static const String _fcmToken = 'fcm_token';
 
-  // User related
+  /* static Future<void> saveFCMToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_fcmToken, token);
+    print("---> SP Handler :: FCM token Saved ::");
+  }
+
+  static Future<String?> getFCMToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_fcmToken);
+  }
+
+  static Future<void> clearFcmToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_fcmToken);
+  } */
+
+  /* // User related
   static Future<void> clearAllUserData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_authTokenKey);
@@ -99,9 +109,9 @@ class SharedPreferencesHandler {
     await prefs.remove(_userSignedInKey);
     await prefs.remove(_authTokenKey);
   }
-
+ */
   // Save theme to SharedPreferences
-  static Future<void> saveTheme(String theme) async {
+  /* static Future<void> saveTheme(String theme) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_themeKey, theme);
   }
@@ -110,10 +120,10 @@ class SharedPreferencesHandler {
   static Future<String?> getTheme() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_themeKey);
-  }
+  } */
 
   // Save Expense Alert to SharedPreferences
-  static Future<void> saveExpenseAlert(bool value) async {
+  /* static Future<void> saveExpenseAlert(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_expenseAlertKey, value);
   }
@@ -318,4 +328,5 @@ class SharedPreferencesHandler {
     categories.add(category);
     await saveExpenseCategories(categories);
   }
+ */
 }

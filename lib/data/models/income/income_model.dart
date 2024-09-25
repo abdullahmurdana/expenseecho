@@ -1,10 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class IncomeModel {
   String? id;
-  String? created;
-  String? updated;
+  String? createdAt;
+  String? updatedAt;
   String userId;
   String accountId;
   String category;
@@ -16,10 +15,20 @@ class IncomeModel {
   String? frequency;
   String? startDate;
   String? endAfterDate;
+
+  DateTime? get createdAtDateTime =>
+      createdAt != null ? DateTime.parse(createdAt!) : null;
+  DateTime? get updatedAtDateTime =>
+      updatedAt != null ? DateTime.parse(updatedAt!) : null;
+  DateTime? get startDateTime =>
+      startDate != null ? DateTime.parse(startDate!) : null;
+  DateTime? get endAfterDateTime =>
+      endAfterDate != null ? DateTime.parse(endAfterDate!) : null;
+
   IncomeModel({
     this.id,
-    this.created,
-    this.updated,
+    this.createdAt,
+    this.updatedAt,
     required this.userId,
     required this.accountId,
     required this.category,
@@ -51,8 +60,8 @@ class IncomeModel {
   }) {
     return IncomeModel(
       id: id ?? this.id,
-      created: created ?? this.created,
-      updated: updated ?? this.updated,
+      createdAt: created ?? createdAt,
+      updatedAt: updated ?? updatedAt,
       userId: userId ?? this.userId,
       accountId: accountId ?? this.accountId,
       category: category ?? this.category,
@@ -70,41 +79,42 @@ class IncomeModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'created': created,
-      'updated': updated,
-      'userId': userId,
-      'accountId': accountId,
+      'created': createdAt,
+      'updated': updatedAt,
+      'user_id': userId,
+      'account_id': accountId,
       'category': category,
       'title': title,
       'description': description,
-      'incomeAmount': incomeAmount,
-      'attachmentLink': attachmentLink,
-      'repeated': repeated,
+      'income_amount': incomeAmount,
+      'attachment_link': attachmentLink,
+      'repeated': repeated ? 1 : 0, // Changed to store as integer
       'frequency': frequency,
-      'startDate': startDate,
-      'endAfterDate': endAfterDate,
+      'start_date': startDate,
+      'end_after_date': endAfterDate,
     };
   }
 
   factory IncomeModel.fromMap(Map<String, dynamic> map) {
     return IncomeModel(
       id: map['id'] != null ? map['id'] as String : null,
-      created: map['created'] != null ? map['created'] as String : null,
-      updated: map['updated'] != null ? map['updated'] as String : null,
-      userId: map['userId'] as String,
-      accountId: map['accountId'] as String,
+      createdAt: map['created'] != null ? map['created'] as String : null,
+      updatedAt: map['updated'] != null ? map['updated'] as String : null,
+      userId: map['user_id'] as String,
+      accountId: map['account_id'] as String,
       category: map['category'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
-      incomeAmount: map['incomeAmount'] as double,
-      attachmentLink: map['attachmentLink'] != null
-          ? map['attachmentLink'] as String
+      incomeAmount: (map['income_amount'] as num).toDouble(),
+      attachmentLink: map['attachment_link'] != null
+          ? map['attachment_link'] as String
           : null,
-      repeated: map['repeated'] as bool,
+      repeated: map['repeated'] == 1, // Changed to read as boolean
       frequency: map['frequency'] != null ? map['frequency'] as String : null,
-      startDate: map['startDate'] != null ? map['startDate'] as String : null,
-      endAfterDate:
-          map['endAfterDate'] != null ? map['endAfterDate'] as String : null,
+      startDate: map['start_date'] != null ? map['start_date'] as String : null,
+      endAfterDate: map['end_after_date'] != null
+          ? map['end_after_date'] as String
+          : null,
     );
   }
 
@@ -115,7 +125,7 @@ class IncomeModel {
 
   @override
   String toString() {
-    return 'IncomeModel(id: $id, created: $created, updated: $updated, userId: $userId, accountId: $accountId, category: $category, Title: $title, description: $description, incomeAmount: $incomeAmount, attachmentLink: $attachmentLink, repeated: $repeated, frequency: $frequency, startDate: $startDate, endAfterDate: $endAfterDate)';
+    return 'IncomeModel(id: $id, created: $createdAt, updated: $updatedAt, userId: $userId, accountId: $accountId, category: $category, title: $title, description: $description, incomeAmount: $incomeAmount, attachmentLink: $attachmentLink, repeated: $repeated, frequency: $frequency, startDate: $startDate, endAfterDate: $endAfterDate)';
   }
 
   @override
@@ -123,8 +133,8 @@ class IncomeModel {
     if (identical(this, other)) return true;
 
     return other.id == id &&
-        other.created == created &&
-        other.updated == updated &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt &&
         other.userId == userId &&
         other.accountId == accountId &&
         other.category == category &&
@@ -141,8 +151,8 @@ class IncomeModel {
   @override
   int get hashCode {
     return id.hashCode ^
-        created.hashCode ^
-        updated.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode ^
         userId.hashCode ^
         accountId.hashCode ^
         category.hashCode ^

@@ -1,5 +1,5 @@
+import 'package:expenseecho/data/services/api_service/api_service_handler.dart';
 import 'package:get/get.dart';
-import 'package:expenseecho/data/services/api_service_http.dart';
 
 class ResetPasswordScreenController extends GetxController {
   var newPassword = ''.obs;
@@ -13,7 +13,7 @@ class ResetPasswordScreenController extends GetxController {
     }
 
     try {
-      await ApiServiceHttp.resetPassword(token.value, newPassword.value);
+      await AuthAPIService.resetPassword(token.value, newPassword.value);
       Get.snackbar('Success', 'Password reset successfully');
     } catch (e) {
       Get.snackbar('Error', e.toString());

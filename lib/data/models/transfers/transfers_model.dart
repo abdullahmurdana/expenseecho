@@ -1,24 +1,24 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class TransfersModel {
-  String id;
+  String? id;
   String userId;
   String fromAccountId;
   String toAccountId;
   double amount;
   String description;
-  String createdAt;
-  String updatedAt;
+  String? createdAt;
+  String? updatedAt;
+
   TransfersModel({
-    required this.id,
+    this.id,
     required this.userId,
     required this.fromAccountId,
     required this.toAccountId,
     required this.amount,
     required this.description,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -36,14 +36,14 @@ class TransfersModel {
 
   factory TransfersModel.fromMap(Map<String, dynamic> map) {
     return TransfersModel(
-      id: map['id'] as String,
+      id: map['id'] != null ? map['id'] as String : null,
       userId: map['user_id'] as String,
       fromAccountId: map['from_account_id'] as String,
       toAccountId: map['to_account_id'] as String,
       description: map['description'] as String,
-      amount: map['amount'] as double,
-      createdAt: map['created'] as String,
-      updatedAt: map['updated'] as String,
+      amount: (map['amount'] as num).toDouble(),
+      createdAt: map['created'] as String?,
+      updatedAt: map['updated'] as String?,
     );
   }
 
@@ -54,7 +54,7 @@ class TransfersModel {
 
   @override
   String toString() {
-    return 'TransfersModel(id: $id, userId: $userId, fromAccountId: $fromAccountId, toAccountId: $toAccountId, Description: $description, amount: $amount, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'TransfersModel(id: $id, userId: $userId, fromAccountId: $fromAccountId, toAccountId: $toAccountId, description: $description, amount: $amount, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override

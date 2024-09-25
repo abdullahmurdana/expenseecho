@@ -1,18 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class AccountsModel {
-  String id;
-  String createdAt;
-  String updatedAt;
+  String? id; // Changed to nullable
+  String? created; // Changed to nullable
+  String? updated; // Changed to nullable
   String userId;
   String name;
   String type;
   double balance;
-
   AccountsModel({
-    required this.id,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.created,
+    this.updated,
     required this.userId,
     required this.name,
     required this.type,
@@ -21,8 +21,8 @@ class AccountsModel {
 
   AccountsModel copyWith({
     String? id,
-    String? createdAt,
-    String? updatedAt,
+    String? created,
+    String? updated,
     String? userId,
     String? name,
     String? type,
@@ -30,8 +30,8 @@ class AccountsModel {
   }) {
     return AccountsModel(
       id: id ?? this.id,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
+      created: created ?? this.created,
+      updated: updated ?? this.updated,
       userId: userId ?? this.userId,
       name: name ?? this.name,
       type: type ?? this.type,
@@ -42,8 +42,8 @@ class AccountsModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'created': createdAt,
-      'updated': updatedAt,
+      'created': created,
+      'updated': updated,
       'user_id': userId,
       'name': name,
       'type': type,
@@ -53,14 +53,13 @@ class AccountsModel {
 
   factory AccountsModel.fromMap(Map<String, dynamic> map) {
     return AccountsModel(
-      id: map['id'] as String,
-      createdAt: map['created'] as String,
-      updatedAt: map['updated'] as String,
+      id: map['id'] != null ? map['id'] as String : null,
+      created: map['created'] != null ? map['created'] as String : null,
+      updated: map['updated'] != null ? map['updated'] as String : null,
       userId: map['user_id'] as String,
       name: map['name'] as String,
       type: map['type'] as String,
-      balance:
-          (map['balance'] as num).toDouble(), // Handle int to double conversion
+      balance: (map['balance'] as num).toDouble(),
     );
   }
 
@@ -71,7 +70,7 @@ class AccountsModel {
 
   @override
   String toString() {
-    return 'AccountsModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, userId: $userId, name: $name, type: $type, balance: $balance)';
+    return 'AccountsModel(id: $id, created: $created, updated: $updated, userId: $userId, name: $name, type: $type, balance: $balance)';
   }
 
   @override
@@ -79,8 +78,8 @@ class AccountsModel {
     if (identical(this, other)) return true;
 
     return other.id == id &&
-        other.createdAt == createdAt &&
-        other.updatedAt == updatedAt &&
+        other.created == created &&
+        other.updated == updated &&
         other.userId == userId &&
         other.name == name &&
         other.type == type &&
@@ -90,8 +89,8 @@ class AccountsModel {
   @override
   int get hashCode {
     return id.hashCode ^
-        createdAt.hashCode ^
-        updatedAt.hashCode ^
+        created.hashCode ^
+        updated.hashCode ^
         userId.hashCode ^
         name.hashCode ^
         type.hashCode ^

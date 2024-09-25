@@ -1,13 +1,14 @@
-import 'package:expenseecho/data/models/accounts/accounts_model.dart';
-import 'package:expenseecho/routes/app_routes.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:expenseecho/presentation/profile/account_screen/account_screen_controller.dart';
+import 'package:expenseecho/data/models/accounts/accounts_model.dart';
+import 'package:expenseecho/presentation/profile/accounts/account_details/account_details_screen.dart';
+import 'package:expenseecho/presentation/profile/accounts/account_screen/account_screen_controller.dart';
+import 'package:expenseecho/presentation/profile/accounts/add_new_account/add_new_account_screen.dart';
 import 'package:expenseecho/widgets/custom_widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:get/get.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -27,21 +28,7 @@ class _AccountScreenState extends State<AccountScreen> {
       appBar: _buildAppBar(localization: localization),
       backgroundColor: lightThemeColor,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-        child: buildElevatedButton(
-          height: 56,
-          width: size.width,
-
-          // Add navigation to this button
-          onTapped: () => Get.offAllNamed(AppRoutes.mainScreen),
-          title: "Add new wallet",
-          bgColor: violetColor,
-          fgColor: lightThemeColor,
-          iconData: Icons.add,
-          textStyle: AppStyle.poppinsRegularWhite(fontSize: 20),
-        ),
-      ),
+      floatingActionButton: buildCustomFAB(size, localization),
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -60,25 +47,30 @@ class _AccountScreenState extends State<AccountScreen> {
                     itemCount: accountScreenController.accounts.length,
                     itemBuilder: (context, index) {
                       final account = accountScreenController.accounts[index];
-                      return ListTile(
-                        minTileHeight: 80,
-                        leading: buildLeadingIcon(account: account),
-                        title: Text(
-                          account.name,
-                          style: AppStyle.poppinsMediumBlack(
-                            fontSize: 20,
-                          ),
+                      return GestureDetector(
+                        onTap: () => Get.to(
+                          () => AccountDetailsScreen(accountsModel: account),
                         ),
-                        trailing: SizedBox(
-                          width: 100,
-                          child: Text(
-                            '\$${account.balance.toInt()}',
+                        child: ListTile(
+                          minTileHeight: 80,
+                          leading: buildLeadingIcon(account: account),
+                          title: Text(
+                            account.name,
                             style: AppStyle.poppinsMediumBlack(
                               fontSize: 20,
                             ),
                           ),
+                          trailing: SizedBox(
+                            width: 100,
+                            child: Text(
+                              '\$${account.balance.toInt()}',
+                              style: AppStyle.poppinsMediumBlack(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          // subtitle: Text('Balance: \$${account.balance}'),
                         ),
-                        // subtitle: Text('Balance: \$${account.balance}'),
                       );
                     },
                   );
@@ -87,6 +79,29 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Padding buildCustomFAB(Size size, AppLocalizations localization) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+      child: buildElevatedButton(
+        height: 56,
+        width: size.width,
+
+        // Add navigation to this button
+        onTapped: () {
+          Get.to(() => const AddNewAccountScreen(isEdit: false), arguments: {
+            'userId': accountScreenController.userModel.value?.id,
+            'fromSignUp': false,
+          });
+        },
+        title: localization.lbl_add_new_wallet,
+        bgColor: violetColor,
+        fgColor: lightThemeColor,
+        iconData: Icons.add,
+        textStyle: AppStyle.poppinsRegularWhite(fontSize: 20),
       ),
     );
   }

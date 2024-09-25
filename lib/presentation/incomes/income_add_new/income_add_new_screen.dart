@@ -1,23 +1,27 @@
+import 'package:expenseecho/core/utils/app_styles.dart';
+import 'package:expenseecho/core/utils/sized_box_extensions.dart';
+import 'package:expenseecho/core/utils/theme_colors.dart';
 import 'package:expenseecho/data/models/accounts/accounts_model.dart';
 import 'package:expenseecho/data/models/category_model.dart';
+import 'package:expenseecho/data/models/income/income_model.dart';
+import 'package:expenseecho/presentation/home/home_screen/home_screen_controller.dart';
+import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_controller.dart';
+import 'package:expenseecho/presentation/profile/accounts/account_screen/account_screen_controller.dart';
+import 'package:expenseecho/routes/app_routes.dart';
 import 'package:expenseecho/widgets/blurred_background_widget.dart';
 import 'package:expenseecho/widgets/currency_input_formatter.dart';
 import 'package:expenseecho/widgets/custom_dashed_border.dart';
 import 'package:expenseecho/widgets/custom_loading_indicator.dart';
-import 'package:expenseecho/widgets/custom_success_dialog.dart';
+import 'package:expenseecho/widgets/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:get/get.dart';
 
-import 'package:expenseecho/core/utils/app_styles.dart';
-import 'package:expenseecho/core/utils/sized_box_extensions.dart';
-import 'package:expenseecho/core/utils/theme_colors.dart';
-import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_controller.dart';
-import 'package:expenseecho/widgets/custom_widgets.dart';
-
 class IncomeAddNewScreen extends StatefulWidget {
-  const IncomeAddNewScreen({super.key});
+  final bool isEdit;
+  final IncomeModel? incomeModel;
+  const IncomeAddNewScreen({super.key, required this.isEdit, this.incomeModel});
 
   @override
   _IncomeAddNewScreenState createState() => _IncomeAddNewScreenState();
@@ -26,6 +30,8 @@ class IncomeAddNewScreen extends StatefulWidget {
 class _IncomeAddNewScreenState extends State<IncomeAddNewScreen> {
   final incomeAddNewController = Get.find<IncomeAddNewController>();
 
+  IncomeModel? incomeModel;
+  bool isEdit = false;
   @override
   void initState() {
     super.initState();
@@ -33,6 +39,15 @@ class _IncomeAddNewScreenState extends State<IncomeAddNewScreen> {
       statusBarColor: greenThemeColor,
       statusBarIconBrightness: Brightness.light,
     ));
+    print('---> Income Model :: ${widget.incomeModel.toString()}');
+    print('---> isEdit :: ${widget.isEdit}');
+    isEdit = widget.isEdit;
+    incomeModel = widget.incomeModel;
+    if (isEdit && incomeModel != null) {
+      incomeAddNewController.fetchCategories().then((_) {
+        incomeAddNewController.initializeForEdit(widget.incomeModel!);
+      });
+    }
   }
 
   @override
@@ -53,7 +68,9 @@ class _IncomeAddNewScreenState extends State<IncomeAddNewScreen> {
         backgroundColor: greenThemeColor,
         centerTitle: true,
         title: Text(
-          localization.lbl_income,
+          widget.isEdit
+              ? localization.lbl_edit_income
+              : localization.lbl_income,
           style: AppStyle.poppinsCustom(
             fontSize: 20,
             color: lightThemeColor,
@@ -125,14 +142,14 @@ class _IncomeAddNewScreenState extends State<IncomeAddNewScreen> {
                     ),
                     gap.h,
                     Obx(() => buildTextField(
-                            controller:
-                                incomeAddNewController.titleController.value,
-                            hintText: localization.lbl_enter_title,
-                            labelText: localization.lbl_title,
-                            height: 56,
-                            width: availableWidth,
-                          )),
-                      gap.h,
+                          controller:
+                              incomeAddNewController.titleController.value,
+                          hintText: localization.lbl_enter_title,
+                          labelText: localization.lbl_title,
+                          height: 56,
+                          width: availableWidth,
+                        )),
+                    gap.h,
                     Obx(() => buildTextField(
                           controller: incomeAddNewController
                               .descriptionController.value,
@@ -333,29 +350,38 @@ class _IncomeAddNewScreenState extends State<IncomeAddNewScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: horizontalPadding),
-                      child: Obx(() {
-                        final controller = Get.find<IncomeAddNewController>();
-                        return buildElevatedButton(
-                          height: 56,
-                          width: size.width,
-                          onTapped: () async {
-                            // final attachment = controller.attachment.value;
-                            // if (attachment != null) {
-                            //    await controller.uploadFileToS3(attachment);
-                            // }
-                            await controller.createIncome().then((value) {
-                              if (value) {
-                                showSuccessDialog(
-                                    message: localization
-                                        .msg_success_add_transaction);
-                              }
-                            });
-                          },
-                          title: localization.lbl_continue,
-                          bgColor: violetColor,
-                          fgColor: lightThemeColor,
-                        );
-                      }),
+                      child: buildElevatedButton(
+                        height: 56,
+                        width: size.width,
+                        onTapped: () async {
+                          await incomeAddNewController
+                              .createorUpdateIncome(widget.isEdit)
+                              .then((value) async {
+                            if (value) {
+                              Get.snackbar(
+                                'Success',
+                                widget.isEdit
+                                    ? localization.msg_success_update_income
+                                    : localization.msg_success_create_income,
+                              );
+                            }
+                            // Delay to ensure snackbar is shown
+                            await Future.delayed(const Duration(seconds: 2));
+
+                            await Get.find<AccountScreenController>()
+                                .fetchAccounts();
+                            await Get.find<HomeScreenController>()
+                                .fetchAllTransactions();
+
+                            // Navigate back to the list view screen
+                            Get.until((route) =>
+                                Get.currentRoute == AppRoutes.mainScreenHome);
+                          });
+                        },
+                        title: localization.lbl_continue,
+                        bgColor: violetColor,
+                        fgColor: lightThemeColor,
+                      ),
                     ),
                   ],
                 ),

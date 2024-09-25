@@ -1,5 +1,5 @@
+import 'package:expenseecho/data/services/shared_preferences/shared_preferences_handler.dart';
 import 'package:flutter/material.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
@@ -24,7 +24,7 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   Future<void> _loadTheme() async {
-    String? themeString = await SharedPreferencesHandler.getTheme();
+    String? themeString = await ThemePreferences.getTheme();
     if (themeString != null) {
       _themeMode = _themeModeFromString(themeString);
       notifyListeners();
@@ -32,7 +32,7 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   Future<void> _saveTheme(ThemeMode themeMode) async {
-    await SharedPreferencesHandler.saveTheme(_themeModeToString(themeMode));
+    await ThemePreferences.saveTheme(_themeModeToString(themeMode));
   }
 
   ThemeMode _themeModeFromString(String themeString) {

@@ -2,52 +2,71 @@
 import 'dart:convert';
 
 class UserModel {
-  final String userId;
+  String? id;
   final String name;
   final String email;
-  final String username;
-  final String avatarLink;
+  String? username;
+  final String password;
+  String? avatarLink;
+  String? createdAt;
+  String? updatedAt;
   UserModel({
-    required this.userId,
+    this.id,
     required this.name,
     required this.email,
-    required this.username,
-    required this.avatarLink,
+    this.username,
+    required this.password,
+    this.avatarLink,
+    this.createdAt,
+    this.updatedAt,
   });
 
   UserModel copyWith({
-    String? userId,
+    String? id,
     String? name,
     String? email,
     String? username,
+    String? password,
     String? avatarLink,
+    String? createdAt,
+    String? updatedAt,
   }) {
     return UserModel(
-      userId: userId ?? this.userId,
+      id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       username: username ?? this.username,
+      password: password ?? this.password,
       avatarLink: avatarLink ?? this.avatarLink,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': userId,
+      'id': id,
       'name': name,
       'email': email,
       'username': username,
+      'password': password,
       'avatar_link': avatarLink,
+      'created': createdAt,
+      'updated': updatedAt,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      userId: map['id'] as String,
+      id: map['id'] != null ? map['id'] as String : null,
       name: map['name'] as String,
       email: map['email'] as String,
-      username: map['username'] as String,
-      avatarLink: map['avatar_link'] as String,
+      username: map['username'] != null ? map['username'] as String : null,
+      password: map['password'] as String,
+      avatarLink:
+          map['avatar_link'] != null ? map['avatar_link'] as String : null,
+      createdAt: map['created'] != null ? map['created'] as String : null,
+      updatedAt: map['updated'] != null ? map['updated'] as String : null,
     );
   }
 
@@ -58,26 +77,32 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(userId: $userId, name: $name, email: $email, username: $username, avatarLink: $avatarLink)';
+    return 'UserModel(id: $id, name: $name, email: $email, username: $username, password: $password, avatarLink: $avatarLink, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
   bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;
 
-    return other.userId == userId &&
+    return other.id == id &&
         other.name == name &&
         other.email == email &&
         other.username == username &&
-        other.avatarLink == avatarLink;
+        other.password == password &&
+        other.avatarLink == avatarLink &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
   }
 
   @override
   int get hashCode {
-    return userId.hashCode ^
+    return id.hashCode ^
         name.hashCode ^
         email.hashCode ^
         username.hashCode ^
-        avatarLink.hashCode;
+        password.hashCode ^
+        avatarLink.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
   }
 }

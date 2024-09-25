@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 const String dateTimeFormatPattern = 'dd/MM/yyyy';
 const String displayDateTimeFormatPattern = 'EEEE d MMM, yy  HH:mm';
+const String onlyTimeFormatPattern = 'HH:mm aa';
 
 extension DateTimeExtension on DateTime {
   String format({
@@ -33,4 +34,36 @@ Map<String, int> monthNameToNumber = {
 
 int getMonthNumber(String monthName) {
   return monthNameToNumber[monthName.toUpperCase()] ?? 1;
+}
+
+extension DateHelpers on DateTime {
+  bool isToday() {
+    final now = DateTime.now();
+    return year == now.year && month == now.month && day == now.day;
+  }
+
+  bool isYesterday() {
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    return year == yesterday.year &&
+        month == yesterday.month &&
+        day == yesterday.day;
+  }
+
+  bool isLastWeek() {
+    final now = DateTime.now();
+    final lastWeek = now.subtract(const Duration(days: 7));
+    return isAfter(lastWeek) && isBefore(now);
+  }
+
+  bool isLastMonth() {
+    final now = DateTime.now();
+    final lastMonth = DateTime(now.year, now.month - 1, now.day);
+    return isAfter(lastMonth) && isBefore(now);
+  }
+
+  bool isLastYear() {
+    final now = DateTime.now();
+    final lastYear = DateTime(now.year - 1, now.month, now.day);
+    return isAfter(lastYear) && isBefore(now);
+  }
 }

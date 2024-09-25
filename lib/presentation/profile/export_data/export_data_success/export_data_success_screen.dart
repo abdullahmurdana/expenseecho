@@ -58,7 +58,7 @@ class _ExportDataSuccessScreenState extends State<ExportDataSuccessScreen> {
                       height: 56,
                       width: size.width,
                       onTapped: () {
-                        return Get.toNamed(AppRoutes.mainScreen);
+                        return Get.toNamed(AppRoutes.mainScreenHome);
                       },
                       title: localization.lbl_back_to_main,
                       bgColor: violetColor,

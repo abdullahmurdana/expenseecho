@@ -17,7 +17,7 @@ class MainScreenController extends GetxController {
   final titleList = <String>[
     "Home",
     "Transactions",
-    "Notifications",
+    "Budget",
     "Profile",
   ];
 

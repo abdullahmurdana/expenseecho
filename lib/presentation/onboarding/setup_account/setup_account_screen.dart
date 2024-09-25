@@ -1,18 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
-import 'package:expenseecho/routes/app_routes.dart';
+import 'package:expenseecho/data/models/user_model/user_model.dart';
+import 'package:expenseecho/presentation/profile/accounts/add_new_account/add_new_account_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class SetupAccountScreen extends StatefulWidget {
-  const SetupAccountScreen({super.key});
+class SetupAccountScreen extends StatelessWidget {
+  final UserModel userModel;
+  const SetupAccountScreen({super.key, required this.userModel});
 
-  @override
-  _SetupAccountScreenState createState() => _SetupAccountScreenState();
-}
-
-class _SetupAccountScreenState extends State<SetupAccountScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -61,7 +58,10 @@ class _SetupAccountScreenState extends State<SetupAccountScreen> {
       padding: const EdgeInsets.only(bottom: 30),
       child: ElevatedButton(
         onPressed: () {
-          Get.toNamed(AppRoutes.addNewAccountScreen);
+          Get.to(() => const AddNewAccountScreen(isEdit: false), arguments: {
+            'userId': userModel.id,
+            'fromSignUp': true,
+          });
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: violetColor,

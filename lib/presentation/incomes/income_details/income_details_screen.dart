@@ -1,26 +1,36 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:expenseecho/data/models/accounts/accounts_model.dart';
+import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_screen.dart';
+import 'package:expenseecho/presentation/incomes/income_details/income_details_controller.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:get/get.dart';
+
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/date_time_utils.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
+import 'package:expenseecho/data/models/income/income_model.dart';
 import 'package:expenseecho/widgets/custom_dashed_divider.dart';
 import 'package:expenseecho/widgets/custom_success_dialog.dart';
 import 'package:expenseecho/widgets/custom_widgets.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 
 class IncomeDetailsScreen extends StatefulWidget {
-  // TODO add Income model to constructor.
-  // final IncomeModel incomeModel;
-  const IncomeDetailsScreen({super.key});
+  // * add Income model to constructor.
+  final IncomeModel incomeModel;
+  const IncomeDetailsScreen({super.key, required this.incomeModel});
 
   @override
   _IncomeDetailsScreenState createState() => _IncomeDetailsScreenState();
 }
 
 class _IncomeDetailsScreenState extends State<IncomeDetailsScreen> {
+  final incomeDetailsController = Get.find<IncomeDetailsController>();
+  late IncomeModel incomeModel;
+  AccountsModel? accountsModel;
+
   @override
   void initState() {
     super.initState();
@@ -28,6 +38,13 @@ class _IncomeDetailsScreenState extends State<IncomeDetailsScreen> {
       statusBarColor: greenThemeColor,
       statusBarIconBrightness: Brightness.light,
     ));
+    incomeModel = widget.incomeModel;
+    _fetchAccountInfo(incomeModel.accountId);
+  }
+
+  _fetchAccountInfo(String accountId) async {
+    accountsModel =
+        await incomeDetailsController.getAccountDetails(accountId: accountId);
   }
 
   @override
@@ -52,7 +69,10 @@ class _IncomeDetailsScreenState extends State<IncomeDetailsScreen> {
       child: buildElevatedButton(
         height: 56,
         width: size.width,
-        onTapped: () {},
+        onTapped: () => Get.to(() => IncomeAddNewScreen(
+              isEdit: true,
+              incomeModel: incomeModel,
+            )),
         title: localization.lbl_edit,
         bgColor: violetColor,
         fgColor: lightThemeColor,
@@ -129,15 +149,14 @@ class _IncomeDetailsScreenState extends State<IncomeDetailsScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              // TODO use income amount here
                               Text(
-                                '\$120',
+                                '\$${incomeModel.incomeAmount.toInt()}',
                                 style:
                                     AppStyle.poppinsMediumWhite(fontSize: 55),
                               ),
-                              // TODO Use income Short Description here
+                              // * Use income Short title here
                               Text(
-                                'Salary for July',
+                                incomeModel.title,
                                 softWrap: false,
                                 overflow: TextOverflow.ellipsis,
                                 style:
@@ -183,9 +202,9 @@ class _IncomeDetailsScreenState extends State<IncomeDetailsScreen> {
                             fontWeight: FontWeight.w500),
                       ),
                       15.h,
-                      // TODO use income description here
+                      // * use income description here
                       Text(
-                        localization.msg_export_success,
+                        incomeModel.description,
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 4,
@@ -230,43 +249,42 @@ class _IncomeDetailsScreenState extends State<IncomeDetailsScreen> {
                     ],
                   ),
                 ),
-                // TODO add income attachment here
-                /* if (incomeModel.attachmentLink != null)
-                  {
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            localization.lbl_attachment,
-                            style: AppStyle.poppinsCustom(
-                                fontSize: 19,
-                                color: lightThemeColor[20]!,
-                                fontWeight: FontWeight.w500),
+                // * add income attachment here
+                if (incomeModel.attachmentLink != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          localization.lbl_attachment,
+                          style: AppStyle.poppinsCustom(
+                              fontSize: 19,
+                              color: lightThemeColor[20]!,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        15.h,
+                        // * use income Attachment here here
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          15.h,
-                          // TODO use income Attachment here here
-                          Container(
-                          decoration:BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          ),
-                          child:CachedNetworkImage(
-                            imageUrl: incomeModel.attachmentLink,
+                          child: CachedNetworkImage(
+                            imageUrl: incomeModel.attachmentLink ?? '',
                             placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
+                                const CustomLoadingIndicator(),
                             errorWidget: (context, url, error) =>
-                                Image.asset("assets/images/avatar_image_1.png"),
+                                Image.asset("assets/images/fallback_image.png"),
                             fit: BoxFit.cover,
                             width: size.width,
                             height: size.height * 0.14,
                             filterQuality: FilterQuality.high,
-                          ),),
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
-                  } */
+                  ),
               ],
             ),
             Positioned(
@@ -311,9 +329,9 @@ class _IncomeDetailsScreenState extends State<IncomeDetailsScreen> {
                               color: lightThemeColor[20]!,
                               fontWeight: FontWeight.w500),
                         ),
-                        // TODO add income category here
+                        // * add income category here
                         Text(
-                          "Salary",
+                          incomeModel.category,
                           style: AppStyle.poppinsCustom(
                               fontSize: 18,
                               color: darkThemeColor,
@@ -324,17 +342,17 @@ class _IncomeDetailsScreenState extends State<IncomeDetailsScreen> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // TODO Add account name here
+                        // * Add account type here
                         Text(
-                          "Bank",
+                          accountsModel?.type ?? '',
                           style: AppStyle.poppinsCustom(
                               fontSize: 18,
                               color: lightThemeColor[20]!,
                               fontWeight: FontWeight.w500),
                         ),
-                        // TODO Add account name here
+                        // * Add account name here
                         Text(
-                          "Wise",
+                          accountsModel?.name ?? '',
                           style: AppStyle.poppinsCustom(
                               fontSize: 18,
                               color: darkThemeColor,
@@ -421,8 +439,21 @@ class _IncomeDetailsScreenState extends State<IncomeDetailsScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       Get.back();
-                      showSuccessDialog(
-                          message: localization.msg_success_remove_transaction);
+                      try {
+                        // Delete from local database
+                        await incomeDetailsController
+                            .deleteIncome(incomeModel)
+                            .then((value) {
+                          if (value) {
+                            showSuccessDialog(
+                                message: localization
+                                    .msg_success_remove_transaction);
+                          }
+                        });
+                      } catch (e) {
+                        print('---> Error deleting income: $e');
+                        // Show error dialog or message
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: violetColor,

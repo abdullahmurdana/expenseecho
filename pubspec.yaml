@@ -58,6 +58,16 @@ dependencies:
   file_picker: ^8.1.2
   shimmer: ^3.0.0
   app_links: ^6.3.1
+  firebase_core: ^3.4.1
+  firebase_auth: ^5.2.1
+  firebase_messaging: ^15.1.1
+  flutter_local_notifications: ^17.2.2
+  syncfusion_flutter_charts: ^26.2.14
+  syncfusion_flutter_sliders: ^26.2.14
+  syncfusion_flutter_core: ^26.2.14
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  encrypt: ^5.0.3
 
 dev_dependencies:
   flutter_test:

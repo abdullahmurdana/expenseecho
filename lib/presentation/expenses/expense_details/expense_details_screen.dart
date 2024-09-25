@@ -1,4 +1,8 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:expenseecho/data/models/accounts/accounts_model.dart';
+import 'package:expenseecho/presentation/expenses/expense_add_new/expense_add_new_screen.dart';
+import 'package:expenseecho/presentation/expenses/expense_details/expense_details_controller.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -8,20 +12,40 @@ import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/date_time_utils.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
+import 'package:expenseecho/data/models/expense/expense_model.dart';
 import 'package:expenseecho/widgets/custom_dashed_divider.dart';
 import 'package:expenseecho/widgets/custom_success_dialog.dart';
 import 'package:expenseecho/widgets/custom_widgets.dart';
 
 class ExpenseDetailsScreen extends StatefulWidget {
-  // TODO add expense to constructor.
-  // final ExpenseModel expenseModel;
-  const ExpenseDetailsScreen({super.key});
+  final ExpenseModel expenseModel;
+  const ExpenseDetailsScreen({super.key, required this.expenseModel});
 
   @override
   State<ExpenseDetailsScreen> createState() => _ExpenseDetailsScreenState();
 }
 
 class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
+  final expenseDetailsController = Get.find<ExpenseDetailsController>();
+  late ExpenseModel expenseModel;
+  AccountsModel? accountsModel;
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: redThemeColor,
+      statusBarIconBrightness: Brightness.light,
+    ));
+    expenseModel = widget.expenseModel;
+    _fetchAccountInfo(expenseModel.accountId);
+  }
+
+  _fetchAccountInfo(String accountId) async {
+    accountsModel =
+        await expenseDetailsController.getAccountDetails(accountId: accountId);
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -44,7 +68,10 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
       child: buildElevatedButton(
         height: 56,
         width: size.width,
-        onTapped: () {},
+        onTapped: () => Get.to(() => ExpenseAddNewScreen(
+              expenseModel: expenseModel,
+              isEdit: true,
+            )),
         title: localization.lbl_edit,
         bgColor: violetColor,
         fgColor: lightThemeColor,
@@ -121,15 +148,13 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              // TODO use expense amount here
                               Text(
-                                '\$120',
+                                '\$${expenseModel.expenseAmount.toInt()}',
                                 style:
                                     AppStyle.poppinsMediumWhite(fontSize: 55),
                               ),
-                              // TODO Use Expense Short Description here
                               Text(
-                                'Buy Some Grocery',
+                                expenseModel.title,
                                 softWrap: false,
                                 overflow: TextOverflow.ellipsis,
                                 style:
@@ -175,9 +200,8 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                             fontWeight: FontWeight.w500),
                       ),
                       15.h,
-                      // TODO use expense description here
                       Text(
-                        localization.msg_export_success,
+                        expenseModel.description,
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 4,
@@ -222,43 +246,40 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                     ],
                   ),
                 ),
-                // TODO add expense attachment here
-                /* if (expenseModel.attachmentLink != null)
-                  {
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            localization.lbl_attachment,
-                            style: AppStyle.poppinsCustom(
-                                fontSize: 19,
-                                color: lightThemeColor[20]!,
-                                fontWeight: FontWeight.w500),
+                if (expenseModel.attachmentLink != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          localization.lbl_attachment,
+                          style: AppStyle.poppinsCustom(
+                              fontSize: 19,
+                              color: lightThemeColor[20]!,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        15.h,
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          15.h,
-                          // TODO use expense Attachment here here
-                          Container(
-                          decoration:BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          ),
-                          child:CachedNetworkImage(
-                            imageUrl: expenseModel.attachmentLink,
+                          child: CachedNetworkImage(
+                            imageUrl: expenseModel.attachmentLink ?? '',
                             placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
+                                const CustomLoadingIndicator(),
                             errorWidget: (context, url, error) =>
-                                Image.asset("assets/images/avatar_image_1.png"),
+                                Image.asset("assets/images/fallback_image.png"),
                             fit: BoxFit.cover,
                             width: size.width,
                             height: size.height * 0.14,
                             filterQuality: FilterQuality.high,
-                          ),),
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
-                  } */
+                  ),
               ],
             ),
             Positioned(
@@ -303,9 +324,8 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                               color: lightThemeColor[20]!,
                               fontWeight: FontWeight.w500),
                         ),
-                        // TODO add expense category here
                         Text(
-                          "Shopping",
+                          expenseModel.category,
                           style: AppStyle.poppinsCustom(
                               fontSize: 18,
                               color: darkThemeColor,
@@ -316,17 +336,15 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // TODO Add account name here
                         Text(
-                          "Bank",
+                          accountsModel?.type ?? 'No',
                           style: AppStyle.poppinsCustom(
                               fontSize: 18,
                               color: lightThemeColor[20]!,
                               fontWeight: FontWeight.w500),
                         ),
-                        // TODO Add account name here
                         Text(
-                          "Wise",
+                          accountsModel?.name ?? 'No',
                           style: AppStyle.poppinsCustom(
                               fontSize: 18,
                               color: darkThemeColor,
@@ -413,8 +431,21 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       Get.back();
-                      showSuccessDialog(
-                          message: localization.msg_success_remove_transaction);
+                      try {
+                        // Delete from local database
+                        await expenseDetailsController
+                            .deleteExpense(expenseModel)
+                            .then((value) {
+                          if (value) {
+                            showSuccessDialog(
+                                message: localization
+                                    .msg_success_remove_transaction);
+                          }
+                        });
+                      } catch (e) {
+                        print('---> Error deleting transfer: $e');
+                        // Show error dialog or message
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: violetColor,

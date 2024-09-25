@@ -179,6 +179,18 @@ class AppStyle {
     );
   }
 
+  static TextStyle poppinsCustomWithoutColor(
+      {required double fontSize,
+      required FontWeight fontWeight,
+      TextDecoration? textDecoration}) {
+    return TextStyle(
+      fontFamily: 'Poppins',
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      decoration: textDecoration,
+    );
+  }
+
   /// Asset Fonts
   /*static TextStyle txtPoppinsMedium14 = TextStyle(
     color: ColorConstant.orange700,

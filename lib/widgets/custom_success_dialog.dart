@@ -11,7 +11,7 @@ void showSuccessDialog({required String message}) {
     builder: (BuildContext context) {
       Future.delayed(const Duration(seconds: 3), () {
         Get.back();
-        Get.offAllNamed(AppRoutes.mainScreen);
+        Get.offAllNamed(AppRoutes.mainScreenHome);
       });
 
       return Dialog(

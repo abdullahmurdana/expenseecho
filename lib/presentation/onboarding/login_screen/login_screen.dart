@@ -1,18 +1,17 @@
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:get/get.dart';
-
 import 'package:expenseecho/core/utils/app_styles.dart';
 import 'package:expenseecho/core/utils/sized_box_extensions.dart';
 import 'package:expenseecho/core/utils/theme_colors.dart';
 import 'package:expenseecho/core/utils/validation_methods.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
+import 'package:expenseecho/data/services/shared_preferences/shared_preferences_handler.dart';
 import 'package:expenseecho/presentation/onboarding/login_screen/login_screen_controller.dart';
 import 'package:expenseecho/routes/app_routes.dart';
 import 'package:expenseecho/widgets/blurred_background_widget.dart';
 import 'package:expenseecho/widgets/custom_loading_indicator.dart';
 import 'package:expenseecho/widgets/custom_password_field.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     _emailcontroller = TextEditingController(text: 'mimimurdana@gmail.com');
-    _passwordcontroller = TextEditingController(text: 'mimi1234');
+    _passwordcontroller = TextEditingController(text: 'Khan1234@');
     super.initState();
   }
 
@@ -190,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
               bool success = await loginController.signIn(
                   email: email, password: password);
               if (success) {
-                final pin = await SharedPreferencesHandler.getPin();
+                final pin = await UserPreferences.getPin();
                 print(
                     "---> Launch Screen Controller :: PIN Available :: ${pin?.isNotEmpty}");
                 if (pin != null) {

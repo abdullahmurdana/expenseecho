@@ -1,5 +1,5 @@
+import 'package:expenseecho/data/services/shared_preferences/shared_preferences_handler.dart';
 import 'package:get/get.dart';
-import 'package:expenseecho/data/services/shared_preferences_handler.dart';
 import 'package:expenseecho/routes/app_routes.dart';
 
 class EmailVerificationController extends GetxController {
@@ -43,7 +43,7 @@ class EmailVerificationController extends GetxController {
         Get.offNamed(AppRoutes.resetPasswordScreen);
       } else {
         // Navigate to setup PIN screen
-        final savedPin = await SharedPreferencesHandler.getPin();
+        final savedPin = await UserPreferences.getPin();
         if (savedPin == null) {
           Get.offNamed(AppRoutes.setupPinScreen,
               arguments: {'verifyPin': false});

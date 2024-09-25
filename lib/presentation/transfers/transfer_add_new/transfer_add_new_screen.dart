@@ -1,31 +1,38 @@
+import 'package:expenseecho/core/utils/app_styles.dart';
+import 'package:expenseecho/core/utils/sized_box_extensions.dart';
+import 'package:expenseecho/core/utils/theme_colors.dart';
+import 'package:expenseecho/data/models/accounts/accounts_model.dart';
+import 'package:expenseecho/data/models/transfers/transfers_model.dart';
+import 'package:expenseecho/presentation/home/home_screen/home_screen_controller.dart';
+import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_controller.dart';
+import 'package:expenseecho/presentation/profile/accounts/account_screen/account_screen_controller.dart';
+import 'package:expenseecho/presentation/transfers/transfer_add_new/transfer_add_new_controller.dart';
+import 'package:expenseecho/routes/app_routes.dart';
+import 'package:expenseecho/widgets/blurred_background_widget.dart';
+import 'package:expenseecho/widgets/currency_input_formatter.dart';
+import 'package:expenseecho/widgets/custom_dashed_border.dart';
+import 'package:expenseecho/widgets/custom_loading_indicator.dart';
+import 'package:expenseecho/widgets/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:get/get.dart';
 
-import 'package:expenseecho/core/utils/app_styles.dart';
-import 'package:expenseecho/core/utils/sized_box_extensions.dart';
-import 'package:expenseecho/core/utils/theme_colors.dart';
-import 'package:expenseecho/data/models/accounts/accounts_model.dart';
-import 'package:expenseecho/presentation/incomes/income_add_new/income_add_new_controller.dart';
-import 'package:expenseecho/presentation/transfers/transfer_add_new/transfer_add_new_controller.dart';
-import 'package:expenseecho/widgets/blurred_background_widget.dart';
-import 'package:expenseecho/widgets/currency_input_formatter.dart';
-import 'package:expenseecho/widgets/custom_dashed_border.dart';
-import 'package:expenseecho/widgets/custom_loading_indicator.dart';
-import 'package:expenseecho/widgets/custom_success_dialog.dart';
-import 'package:expenseecho/widgets/custom_widgets.dart';
-
-class TransferAddnewScreen extends StatefulWidget {
-  const TransferAddnewScreen({super.key});
+class TransferAddNewScreen extends StatefulWidget {
+  final TransfersModel? transfersModel;
+  final bool isEdit;
+  const TransferAddNewScreen(
+      {super.key, required this.isEdit, this.transfersModel});
 
   @override
-  _TransferAddnewScreenState createState() => _TransferAddnewScreenState();
+  _TransferAddNewScreenState createState() => _TransferAddNewScreenState();
 }
 
-class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
+class _TransferAddNewScreenState extends State<TransferAddNewScreen> {
   final transferAddNewController = Get.find<TransferAddNewController>();
 
+  TransfersModel? transfersModel;
+  bool isEdit = false;
   @override
   void initState() {
     super.initState();
@@ -33,6 +40,11 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
       statusBarColor: blueThemeColor,
       statusBarIconBrightness: Brightness.light,
     ));
+    isEdit = widget.isEdit;
+    transfersModel = widget.transfersModel;
+    if (isEdit && transfersModel != null) {
+      transferAddNewController.initializeForEdit(widget.transfersModel!);
+    }
   }
 
   @override
@@ -55,7 +67,7 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
         backgroundColor: blueThemeColor,
         centerTitle: true,
         title: Text(
-          localization.lbl_transfer,
+          isEdit ? localization.lbl_edit_transfer : localization.lbl_transfer,
           style: AppStyle.poppinsCustom(
             fontSize: 20,
             color: lightThemeColor,
@@ -98,25 +110,33 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                               Obx(() => Container(
                                     width: availableWidthWithoutGap / 2,
                                     height: 56,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                        color: lightThemeColor[20]!,
-                                        width: 1,
-                                      ),
-                                    ),
+                                    // decoration: BoxDecoration(
+                                    //   borderRadius: BorderRadius.circular(16),
+                                    //   border: Border.all(
+                                    //     color: lightThemeColor[20]!,
+                                    //     width: 1,
+                                    //   ),
+                                    // ),
                                     child:
                                         DropdownButtonFormField<AccountsModel>(
-                                      decoration: const InputDecoration(
+                                      decoration: InputDecoration(
                                         labelText: 'From',
-                                        border: InputBorder.none,
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            width: 1,
+                                            color: lightThemeColor[20]!,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
                                         contentPadding:
-                                            EdgeInsets.fromLTRB(18, 16, 12, 16),
-                                        // helperText: addNewTransferScreenController
+                                            const EdgeInsets.fromLTRB(
+                                                18, 16, 12, 16),
+                                        // helperText: transferAddNewController
                                         //             .selectedFromAccount
                                         //             .value !=
                                         //         null
-                                        //     ? 'Balance: \$${addNewTransferScreenController.selectedFromAccount.value!.balance}'
+                                        //     ? 'Balance: \$${transferAddNewController.selectedFromAccount.value!.balance}'
                                         //     : '',
                                       ),
                                       icon: const SizedBox.shrink(),
@@ -135,6 +155,8 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                                         transferAddNewController
                                             .selectedFromAccount
                                             .value = account;
+                                        debugPrint(
+                                            '---> Selected From Account ID : ${account?.id}');
                                       },
                                       value: transferAddNewController
                                           .selectedFromAccount.value,
@@ -144,20 +166,28 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                               Obx(() => Container(
                                     width: availableWidthWithoutGap / 2,
                                     height: 56,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                        color: lightThemeColor[20]!,
-                                        width: 1,
-                                      ),
-                                    ),
+                                    // decoration: BoxDecoration(
+                                    //   borderRadius: BorderRadius.circular(16),
+                                    //   border: Border.all(
+                                    //     color: lightThemeColor[20]!,
+                                    //     width: 1,
+                                    //   ),
+                                    // ),
                                     child:
                                         DropdownButtonFormField<AccountsModel>(
-                                      decoration: const InputDecoration(
+                                      decoration: InputDecoration(
                                         labelText: 'To',
-                                        border: InputBorder.none,
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            width: 1,
+                                            color: lightThemeColor[20]!,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
                                         contentPadding:
-                                            EdgeInsets.fromLTRB(18, 16, 12, 16),
+                                            const EdgeInsets.fromLTRB(
+                                                18, 16, 12, 16),
                                         // helperText: addNewTransferScreenController
                                         //             .selectedToAccount.value !=
                                         //         null
@@ -179,6 +209,8 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                                       onChanged: (account) {
                                         transferAddNewController
                                             .selectedToAccount.value = account;
+                                        debugPrint(
+                                            '---> Selected From Account ID : ${account?.id}');
                                       },
                                       value: transferAddNewController
                                           .selectedToAccount.value,
@@ -282,31 +314,36 @@ class _TransferAddnewScreenState extends State<TransferAddnewScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: horizontalPadding),
-                      child: Obx(
-                        () {
-                          final controller =
-                              Get.find<TransferAddNewController>();
-                          return buildElevatedButton(
-                            height: 56,
-                            width: size.width,
-                            onTapped: () async {
-                              // final attachment = controller.attachment.value;
-                              // if (attachment != null) {
-                              //   // await controller.uploadFileToS3(attachment);
-                              // }
-                              await controller.createTransfer().then((value) {
-                                if (value) {
-                                  showSuccessDialog(
-                                      message: localization
-                                          .msg_success_add_transaction);
-                                }
-                              });
-                            },
-                            title: localization.lbl_continue,
-                            bgColor: blueThemeColor,
-                            fgColor: lightThemeColor,
-                          );
+                      child: buildElevatedButton(
+                        height: 56,
+                        width: size.width,
+                        onTapped: () async {
+                          transferAddNewController
+                              .createOrUpdateTransfer(isEdit)
+                              .then((value) async {
+                            if (value) {
+                              Get.snackbar(
+                                localization.msg_success,
+                                widget.isEdit
+                                    ? localization.msg_success_update_transfer
+                                    : localization.msg_success_create_transfer,
+                              );
+                            }
+                            // Delay to ensure snackbar is shown
+                            await Future.delayed(const Duration(seconds: 2));
+                            await Get.find<AccountScreenController>()
+                                .fetchAccounts();
+                            await Get.find<HomeScreenController>()
+                                .fetchAllTransactions();
+
+                            // Navigate back to the list view screen
+                            Get.until((route) =>
+                                Get.currentRoute == AppRoutes.mainScreenHome);
+                          });
                         },
+                        title: localization.lbl_continue,
+                        bgColor: blueThemeColor,
+                        fgColor: lightThemeColor,
                       ),
                     ),
                   ],

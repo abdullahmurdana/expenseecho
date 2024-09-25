@@ -1,3 +1,7 @@
+import 'package:expenseecho/data/models/expense/expense_model.dart';
+import 'package:expenseecho/presentation/home/home_screen/home_screen_controller.dart';
+import 'package:expenseecho/presentation/profile/accounts/account_screen/account_screen_controller.dart';
+import 'package:expenseecho/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -16,7 +20,10 @@ import 'package:expenseecho/widgets/custom_loading_indicator.dart';
 import 'package:expenseecho/widgets/custom_widgets.dart';
 
 class ExpenseAddNewScreen extends StatefulWidget {
-  const ExpenseAddNewScreen({super.key});
+  final bool isEdit;
+  final ExpenseModel? expenseModel;
+  const ExpenseAddNewScreen(
+      {super.key, required this.isEdit, this.expenseModel});
 
   @override
   _ExpenseAddNewScreenState createState() => _ExpenseAddNewScreenState();
@@ -25,6 +32,9 @@ class ExpenseAddNewScreen extends StatefulWidget {
 class _ExpenseAddNewScreenState extends State<ExpenseAddNewScreen> {
   final expenseAddNewController = Get.find<ExpenseAddNewController>();
 
+  ExpenseModel? expenseModel;
+  bool isEdit = false;
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +42,15 @@ class _ExpenseAddNewScreenState extends State<ExpenseAddNewScreen> {
       statusBarColor: redThemeColor,
       statusBarIconBrightness: Brightness.light,
     ));
+    print('---> Budget Model :: ${widget.expenseModel.toString()}');
+    print('---> isEdit :: ${widget.isEdit}');
+    isEdit = widget.isEdit;
+    expenseModel = widget.expenseModel;
+    if (isEdit && expenseModel != null) {
+      expenseAddNewController.fetchCategories().then((_) {
+        expenseAddNewController.initializeForEdit(widget.expenseModel!);
+      });
+    }
   }
 
   @override
@@ -52,7 +71,9 @@ class _ExpenseAddNewScreenState extends State<ExpenseAddNewScreen> {
         backgroundColor: redThemeColor,
         centerTitle: true,
         title: Text(
-          localization.lbl_expense,
+          widget.isEdit
+              ? localization.lbl_edit_expense
+              : localization.lbl_expense,
           style: AppStyle.poppinsCustom(
             fontSize: 20,
             color: lightThemeColor,
@@ -78,7 +99,7 @@ class _ExpenseAddNewScreenState extends State<ExpenseAddNewScreen> {
               return Container(
                 height: bottomSheetHeight,
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: lightThemeColor,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 ),
                 child: SingleChildScrollView(
@@ -340,7 +361,29 @@ class _ExpenseAddNewScreenState extends State<ExpenseAddNewScreen> {
                         child: buildElevatedButton(
                           height: 56,
                           width: size.width,
-                          onTapped: () {},
+                          onTapped: () async {
+                            await expenseAddNewController
+                                .createOrUpdateExpense(isEdit: widget.isEdit)
+                                .then((value) async {
+                              if (value) {
+                                Get.snackbar(
+                                  'Success',
+                                  widget.isEdit
+                                      ? localization.msg_success_update_budget
+                                      : localization.msg_success_create_budget,
+                                );
+                              }
+                              // Delay to ensure snackbar is shown
+                              await Future.delayed(const Duration(seconds: 2));
+                              await Get.find<AccountScreenController>()
+                                  .fetchAccounts();
+                              await Get.find<HomeScreenController>()
+                                  .fetchAllTransactions();
+                              // Navigate back to the list view screen
+                              Get.until((route) =>
+                                  Get.currentRoute == AppRoutes.mainScreenHome);
+                            });
+                          },
                           title: localization.lbl_continue,
                           bgColor: violetColor,
                           fgColor: lightThemeColor,
