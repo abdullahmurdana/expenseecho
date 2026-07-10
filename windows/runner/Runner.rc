@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "com.mimi" "\0"
             VALUE "FileDescription", "expenseecho" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "expenseecho" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 com.mimi. All rights reserved." "\0"
             VALUE "OriginalFilename", "expenseecho.exe" "\0"
             VALUE "ProductName", "expenseecho" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
