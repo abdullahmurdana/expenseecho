@@ -1,24 +1,25 @@
 # ExpenseEcho
 
 A cross-platform personal finance app built with Flutter. Track expenses, income,
-budgets, and transfers across multiple accounts, with offline-first local storage
-and periodic cloud sync.
+budgets, and transfers across multiple accounts, with offline-first local storage,
+AI-powered insights, and scheduled cloud sync.
 
 ![Flutter](https://img.shields.io/badge/Flutter-Dart-blue)
 ![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android-lightgrey)
+![State](https://img.shields.io/badge/State-GetX-purple)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Overview
 
 ExpenseEcho helps users manage day-to-day finances from their phone. It records
 expenses and income across multiple accounts, tracks budgets with configurable
-alerts, and generates spending and saving insights. Data is stored locally with
-SQLite for full offline access and synced to Firebase on a schedule for cloud
-backup and cross-device consistency.
+alerts, and generates spending and saving insights powered by the Gemini API.
+Data is stored locally with SQLite for full offline access and synced to Firebase
+on a schedule for cloud backup and cross-device consistency.
 
 ## Screenshots
 
-<!-- Add screenshots here once ready:
+<!-- Add screenshots once ready:
 ![Home](screenshots/home.png)
 ![Insights](screenshots/insights.png)
 -->
@@ -27,32 +28,25 @@ backup and cross-device consistency.
 
 - **Authentication** — sign-up and login with user profiles (username, email, avatar).
 - **Multiple accounts** — bank, credit card, and wallet accounts with real-time balance tracking.
-- **Expense tracking** — log expenses with category, description, amount, and optional attachments; supports recurring expenses (daily, monthly, quarterly, yearly) with end dates.
+- **Expense tracking** — log expenses with category, description, amount, and optional attachments; recurring expenses (daily, monthly, quarterly, yearly) with end dates.
 - **Income tracking** — record income with the same detail and recurring options.
 - **Fund transfers** — move money between accounts with automatic balance updates.
 - **Budgets** — set category budgets with alerts at a chosen threshold or when limits are exceeded.
-- **Financial insights** — spending and saving analytics to support better decisions.
+- **AI-powered insights** — spending and saving insights generated with Google's Gemini API.
+- **Push notifications** — Firebase Cloud Messaging (FCM) with a notification handler for budget alerts and updates.
 - **Daily motivation** — a new financial quote each day.
+- **Localization** — runtime multi-language support across the interface via `flutter_localization`.
 - **Offline-first** — local SQLite storage for full offline use, with scheduled Firebase sync (every 12 hours) for cloud backup.
-
-<!-- KEEP ONLY IF ACTUALLY IN THE CODE. If not, delete this section AND remove
-     "Gemini API" from your portfolio. -->
-## AI-powered insights (Gemini)
-
-The app uses Google's Gemini API to [describe exactly what it does — e.g. generate
-the daily financial quote / produce natural-language spending insights]. AI output
-is reviewed and constrained before being shown to the user.
-
-<!-- KEEP ONLY IF LOCALIZATION IS ACTUALLY IMPLEMENTED. Otherwise delete this line
-     AND remove "Localization" from your portfolio. -->
-- **Localization** — runtime multi-language support across the interface.
 
 ## Tech stack
 
 - **Framework:** Flutter (Dart)
+- **State management:** GetX
 - **Local storage:** SQLite (transaction ledger), SharedPreferences (lightweight state)
 - **Cloud:** Firebase (Firestore for sync, Authentication)
-- **State management:** [confirm — BLoC / Provider / GetX]
+- **Messaging:** Firebase Cloud Messaging (FCM)
+- **AI:** Google Gemini API
+- **Localization:** flutter_localization
 - **Architecture:** offline-first, modular, repository pattern
 
 ## Architecture
@@ -60,8 +54,8 @@ is reviewed and constrained before being shown to the user.
 ExpenseEcho is offline-first: every read is served from the local SQLite store and
 every change is written locally first, then reconciled with Firebase on a scheduled
 sync. This keeps the app fully usable without a connection and consistent across
-devices once reconnected. Business logic is separated from the UI for testability
-and long-term maintainability.
+devices once reconnected. UI is kept separate from business logic (GetX controllers
+over a repository layer) for testability and long-term maintainability.
 
 ## Data models
 
@@ -89,19 +83,19 @@ flutter run
 ```
 
 **Configuration**
-- Set up a Firebase project and add the config files (`google-services.json` / `GoogleService-Info.plist`). Enable Firestore and Authentication.
-- [If AI is used] Add your Gemini API key to the app's environment configuration.
+- Set up a Firebase project and add the config files (`google-services.json` / `GoogleService-Info.plist`). Enable Firestore, Authentication, and Cloud Messaging.
+- Add your Gemini API key to the app's environment configuration.
 
 ## Roadmap
 
-- Push notifications for budget thresholds and sync status
 - Multi-currency support with exchange-rate integration
 - Export reports to PDF / CSV
-- Additional analytics and charts
+- Expanded analytics and charts
 
 ## Author
 
 **Mohammed Abdullah Khan** - Flutter Developer
+
 Portfolio: https://abdullahmurdana.github.io
 LinkedIn: https://www.linkedin.com/in/abdullahmurdana
 
