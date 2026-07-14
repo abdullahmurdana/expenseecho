@@ -101,8 +101,8 @@ flutter run
 
 ## Author
 
-**Mohammed Abdullah Khan** — Flutter Developer
-Portfolio: https://abdullahmurdana.github.io ·
+**Mohammed Abdullah Khan** - Flutter Developer
+Portfolio: https://abdullahmurdana.github.io
 LinkedIn: https://www.linkedin.com/in/abdullahmurdana
 
 ## License
