@@ -1,62 +1,110 @@
-Expense Tracker
-A feature-rich, cross-platform mobile application built with Flutter to help users manage their finances seamlessly. The app allows users to track expenses, incomes, budgets, and account transfers while providing insightful analytics and motivational financial quotes. Data is stored locally using SQLite and synced with Firebase every 12 hours for secure cloud backup and cross-device consistency.
-Features
+# ExpenseEcho
 
-User Authentication: Secure sign-up and login with user profiles (username, email, avatar, and timestamps).
-Account Management: Create and manage multiple accounts (bank, credit card, wallet) with real-time balance tracking.
-Expense Tracking: Log expenses with details like category, description, amount, and optional attachments. Support for recurring expenses (daily, monthly, quarterly, yearly) with customizable end dates.
-Income Tracking: Record incomes with similar details and recurring options for consistent cash flow management.
-Fund Transfers: Easily transfer funds between accounts with automatic balance updates.
-Budget Management: Set budgets for specific expense categories with customizable alerts when spending reaches a defined percentile or exceeds limits.
-Financial Insights: Generate detailed spending and saving analytics to help users make informed financial decisions.
-Daily Motivation: Receive a new financial quote daily to inspire better money management.
-Offline-First: Store data locally with SQLite for offline access, syncing to Firebase every 12 hours for cloud backup.
+A cross-platform personal finance app built with Flutter. Track expenses, income,
+budgets, and transfers across multiple accounts, with offline-first local storage
+and periodic cloud sync.
 
-Tech Stack
+![Flutter](https://img.shields.io/badge/Flutter-Dart-blue)
+![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android-lightgrey)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-Frontend: Flutter (Dart) for a responsive, cross-platform mobile UI.
-Local Storage: SQLite for efficient offline data management.
-Cloud Sync: Firebase for secure, periodic data synchronization.
-Architecture: Modular and scalable design for maintainability and future enhancements.
+## Overview
 
-Data Models
+ExpenseEcho helps users manage day-to-day finances from their phone. It records
+expenses and income across multiple accounts, tracks budgets with configurable
+alerts, and generates spending and saving insights. Data is stored locally with
+SQLite for full offline access and synced to Firebase on a schedule for cloud
+backup and cross-device consistency.
 
-User: user_id, username, email, avatar_image_link, created_at, updated_at
-Account: id, name, type (bank, credit card, wallet), balance
-Expense: id, created_at, updated_at, category, description, expenseAmount, repeated (bool), frequency (if repeated), end_after_date, attachmentLink, account_id (foreign key)
-Income: id, created_at, updated_at, category, description, incomeAmount, repeated (bool), frequency (if repeated), end_after_date, attachmentLink, account_id (foreign key)
-Budget: budgetId, created_at, updated_at, userId (foreign key), expense_category, budgetAmount, receive_alert (bool), alert_percentile
-Transfer: Facilitates fund movement between accounts (not explicitly modeled but supported via account balance updates).
+## Screenshots
 
-Potential Enhancements
+<!-- Add screenshots here once ready:
+![Home](screenshots/home.png)
+![Insights](screenshots/insights.png)
+-->
 
-Push Notifications: Real-time alerts for budget thresholds or sync status.
-Multi-Currency Support: Allow accounts to handle different currencies with exchange rate integration.
-Export Reports: Generate and export financial reports in PDF or CSV formats.
-Dark Mode: Enhance user experience with a customizable UI theme.
+## Features
 
-Getting Started
+- **Authentication** — sign-up and login with user profiles (username, email, avatar).
+- **Multiple accounts** — bank, credit card, and wallet accounts with real-time balance tracking.
+- **Expense tracking** — log expenses with category, description, amount, and optional attachments; supports recurring expenses (daily, monthly, quarterly, yearly) with end dates.
+- **Income tracking** — record income with the same detail and recurring options.
+- **Fund transfers** — move money between accounts with automatic balance updates.
+- **Budgets** — set category budgets with alerts at a chosen threshold or when limits are exceeded.
+- **Financial insights** — spending and saving analytics to support better decisions.
+- **Daily motivation** — a new financial quote each day.
+- **Offline-first** — local SQLite storage for full offline use, with scheduled Firebase sync (every 12 hours) for cloud backup.
 
-Clone the repository:git clone https://github.com/your-username/expense-tracker.git
+<!-- KEEP ONLY IF ACTUALLY IN THE CODE. If not, delete this section AND remove
+     "Gemini API" from your portfolio. -->
+## AI-powered insights (Gemini)
 
+The app uses Google's Gemini API to [describe exactly what it does — e.g. generate
+the daily financial quote / produce natural-language spending insights]. AI output
+is reviewed and constrained before being shown to the user.
 
-Install Flutter and dependencies:flutter pub get
+<!-- KEEP ONLY IF LOCALIZATION IS ACTUALLY IMPLEMENTED. Otherwise delete this line
+     AND remove "Localization" from your portfolio. -->
+- **Localization** — runtime multi-language support across the interface.
 
+## Tech stack
 
-Configure Firebase:
-Set up a Firebase project and add the configuration files to the app.
-Enable Firestore and Authentication in the Firebase console.
+- **Framework:** Flutter (Dart)
+- **Local storage:** SQLite (transaction ledger), SharedPreferences (lightweight state)
+- **Cloud:** Firebase (Firestore for sync, Authentication)
+- **State management:** [confirm — BLoC / Provider / GetX]
+- **Architecture:** offline-first, modular, repository pattern
 
+## Architecture
 
-Set up SQLite:
-Ensure the SQLite plugin is configured for local storage.
+ExpenseEcho is offline-first: every read is served from the local SQLite store and
+every change is written locally first, then reconciled with Firebase on a scheduled
+sync. This keeps the app fully usable without a connection and consistent across
+devices once reconnected. Business logic is separated from the UI for testability
+and long-term maintainability.
 
+## Data models
 
-Run the app:flutter run
+| Model    | Key fields |
+|----------|------------|
+| User     | user_id, username, email, avatar_image_link, created_at, updated_at |
+| Account  | id, name, type (bank / credit card / wallet), balance |
+| Expense  | id, category, description, expenseAmount, repeated, frequency, end_after_date, attachmentLink, account_id, created_at, updated_at |
+| Income   | id, category, description, incomeAmount, repeated, frequency, end_after_date, attachmentLink, account_id, created_at, updated_at |
+| Budget   | budgetId, userId, expense_category, budgetAmount, receive_alert, alert_percentile, created_at, updated_at |
+| Transfer | handled via paired account balance updates |
 
+## Getting started
 
+```bash
+# Clone
+git clone https://github.com/abdullahmurdana/expenseecho.git
+cd expenseecho
 
-Contributing
-Contributions are welcome! Please open an issue or submit a pull request for bug fixes, features, or improvements.
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+# Install dependencies
+flutter pub get
+
+# Run
+flutter run
+```
+
+**Configuration**
+- Set up a Firebase project and add the config files (`google-services.json` / `GoogleService-Info.plist`). Enable Firestore and Authentication.
+- [If AI is used] Add your Gemini API key to the app's environment configuration.
+
+## Roadmap
+
+- Push notifications for budget thresholds and sync status
+- Multi-currency support with exchange-rate integration
+- Export reports to PDF / CSV
+- Additional analytics and charts
+
+## Author
+
+**Mohammed Abdullah Khan** — Flutter Developer
+Portfolio: https://abdullahmurdana.github.io ·
+LinkedIn: https://www.linkedin.com/in/abdullahmurdana
+
+## License
+
+Released under the MIT License. See [LICENSE](LICENSE) for details.
